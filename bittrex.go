@@ -57,3 +57,22 @@ func (b *bittrex) GetTicker(market string) (ticker Ticker, err error) {
 	json.Unmarshal(response.Result, &ticker)
 	return
 }
+
+//
+func (b *bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err error) {
+	r, err := b.client.do("GET", "/public/getmarketsummaries", "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &marketSummaries)
+	return
+
+}
