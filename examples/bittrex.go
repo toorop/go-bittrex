@@ -26,7 +26,11 @@ func main() {
 	//fmt.Println(err, marketSummaries)
 
 	// Get orders book
-	orderBook, err := bittrex.GetOrderBook("BTC-QBC", "both", 100)
+	/*orderBook, err := bittrex.GetOrderBook("BTC-QBC", "both", 100)
 	fmt.Println(err, orderBook)
+	*/
 
+	// Market historu
+	marketHistory, err := bittrex.GetMarketHistory("BTC-QBC", 100)
+	fmt.Println(err, marketHistory)
 }

@@ -88,6 +88,9 @@ func (b *bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 	if depth > 100 {
 		depth = 100
 	}
+	if depth < 1 {
+		depth = 1
+	}
 
 	req := fmt.Sprintf("/public/getorderbook?market=%s&type=%s&depth=%d", strings.ToUpper(market), cat, depth)
 	r, err := b.client.do("GET", req, "")
@@ -104,4 +107,33 @@ func (b *bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 	}
 	json.Unmarshal(response.Result, &orderBook)
 	return
+}
+
+// GetMarketHistory is used to retrieve the latest trades that have occured for a specific market.
+// mark a string literal for the market (ex: BTC-LTC)
+// count a number between 1-100 for the number of entries to return
+func (b *bittrex) GetMarketHistory(market string, count int) (trades []Trade, err error) {
+	if count > 100 {
+		count = 100
+	}
+	if count < 1 {
+		count = 1
+	}
+
+	req := fmt.Sprintf("/public/getmarkethistory?market=%s&count=%d", strings.ToUpper(market), count)
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &trades)
+	return
+
 }
