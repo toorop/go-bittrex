@@ -24,7 +24,7 @@ func New(apiKey string) *bittrex {
 
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
 func (b *bittrex) GetMarkets() (markets []Market, err error) {
-	r, err := b.client.do("GET", "/public/getmarkets", "")
+	r, err := b.client.do("GET", "v1/public/getmarkets", "")
 	if err != nil {
 		return
 	}
@@ -42,7 +42,7 @@ func (b *bittrex) GetMarkets() (markets []Market, err error) {
 
 // GetTicker is used to get the current tick values for a market.
 func (b *bittrex) GetTicker(market string) (ticker Ticker, err error) {
-	r, err := b.client.do("GET", "/public/getticker?market="+strings.ToUpper(market), "")
+	r, err := b.client.do("GET", "v1/public/getticker?market="+strings.ToUpper(market), "")
 	if err != nil {
 		return
 	}
@@ -60,7 +60,7 @@ func (b *bittrex) GetTicker(market string) (ticker Ticker, err error) {
 
 // GetMarketSummaries is used to get the last 24 hour summary of all active exchanges
 func (b *bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err error) {
-	r, err := b.client.do("GET", "/public/getmarketsummaries", "")
+	r, err := b.client.do("GET", "v1/public/getmarketsummaries", "")
 	if err != nil {
 		return
 	}
@@ -92,7 +92,7 @@ func (b *bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 		depth = 1
 	}
 
-	req := fmt.Sprintf("/public/getorderbook?market=%s&type=%s&depth=%d", strings.ToUpper(market), cat, depth)
+	req := fmt.Sprintf("v1/public/getorderbook?market=%s&type=%s&depth=%d", strings.ToUpper(market), cat, depth)
 	r, err := b.client.do("GET", req, "")
 	if err != nil {
 		return
@@ -120,7 +120,7 @@ func (b *bittrex) GetMarketHistory(market string, count int) (trades []Trade, er
 		count = 1
 	}
 
-	req := fmt.Sprintf("/public/getmarkethistory?market=%s&count=%d", strings.ToUpper(market), count)
+	req := fmt.Sprintf("v1/public/getmarkethistory?market=%s&count=%d", strings.ToUpper(market), count)
 	r, err := b.client.do("GET", req, "")
 	if err != nil {
 		return
@@ -135,5 +135,147 @@ func (b *bittrex) GetMarketHistory(market string, count int) (trades []Trade, er
 	}
 	json.Unmarshal(response.Result, &trades)
 	return
+}
 
+// Account
+
+// GetBalances is used to retrieve all balances from your account
+func (b *bittrex) GetBalances() (balances []Balance, err error) {
+	req := fmt.Sprintf("v1/account/getbalances?apikey=" + b.client.apiKey)
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &balances)
+	return
+}
+
+// Getbalance is used to retrieve the balance from your account for a specific currency.
+// currency: a string literal for the currency (ex: LTC)
+func (b *bittrex) GetBalance(currency string) (balance Balance, err error) {
+	req := fmt.Sprintf("v1/account/getbalance?apikey=" + b.client.apiKey + "&currency=" + strings.ToUpper(currency))
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &balance)
+	return
+}
+
+// GetDepositAddress is sed to generate or retrieve an address for a specific currency.
+// currency a string literal for the currency (ie. BTC)
+func (b *bittrex) GetDepositAddress(currency string) (address Address, err error) {
+	req := fmt.Sprintf("v1/account/getdepositaddress?apikey=" + b.client.apiKey + "&currency=" + strings.ToUpper(currency))
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &address)
+	return
+}
+
+// Withdraw is used to withdraw funds from your account.
+// address string the address where to send the funds.
+// currency string literal for the currency (ie. BTC)
+// quantity float the quantity of coins to withdraw
+func (b *bittrex) Withdraw(address, currency string, quantity float64) (withdrawUuid string, err error) {
+	req := fmt.Sprintf("v1.1/account/withdraw?currency=" + strings.ToUpper(currency) + "&quantity=" + fmt.Sprintf("%v", quantity) + "&address=" + address)
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &withdrawUuid)
+	return
+}
+
+// GetOrderHistory used to retrieve your order history.
+// market string literal for the market (ie. BTC-LTC). If set to "all", will return for all market
+// count int : 	the number of records to return. Is set to 0, will return max history
+func (b *bittrex) GetOrderHistory(market string, count int) (orders []Order, err error) {
+	req := fmt.Sprintf("v1.1/account/getorderhistory")
+	if count != 0 || market != "all" {
+		req += "?"
+	}
+	if count != 0 {
+		req += fmt.Sprintf("count=%d&", count)
+	}
+	if market != "all" {
+		req += "market=" + market
+	}
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &orders)
+	return
+}
+
+// GetWithdrawalHistory is used to retrieve your withdrawal history
+// currency string a string literal for the currecy (ie. BTC). IIf set to "all", will return for all currencies
+// count int the number of records to return. Is set to 0 will return the max set.
+func (b *bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals []Withdrawal, err error) {
+	req := fmt.Sprintf("v1.1/account/getwithdrawalhistory")
+	if count != 0 || currency != "all" {
+		req += "?"
+	}
+	if count != 0 {
+		req += fmt.Sprintf("count=%d&", count)
+	}
+	if currency != "all" {
+		req += "currency=" + currency
+	}
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &withdrawals)
+	return
 }

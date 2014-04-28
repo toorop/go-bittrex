@@ -43,7 +43,8 @@ func (c *client) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.R
 func (c *client) do(method string, ressource string, payload string) (response []byte, err error) {
 	connectTimer := time.NewTimer(DEFAULT_HTTPCLIENT_TIMEOUT * time.Second)
 
-	query := fmt.Sprintf("%s/%s/%s", API_BASE, API_VERSION, ressource)
+	query := fmt.Sprintf("%s/%s", API_BASE, ressource)
+	//fmt.Println(query)
 	req, err := http.NewRequest(method, query, strings.NewReader(payload))
 	if err != nil {
 		return
@@ -52,11 +53,9 @@ func (c *client) do(method string, ressource string, payload string) (response [
 		req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	}
 	req.Header.Add("Accept", "application/json")
-
-	req.Header.Set("APIKEY", c.apiKey)
+	req.Header.Add("APIKEY", c.apiKey)
+	//fmt.Println(req)
 	resp, err := c.doTimeoutRequest(connectTimer, req)
-	//fmt.Println(resp.Status, resp.StatusCode, err)
-
 	if err != nil {
 		return
 	}

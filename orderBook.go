@@ -1,11 +1,11 @@
 package bittrex
 
 type OrderBook struct {
-	Buy  []Order `json:"buy"`
-	Sell []Order `json:"sell"`
+	Buy  []Orderb `json:"buy"`
+	Sell []Orderb `json:"sell"`
 }
 
-type Order struct {
+type Orderb struct {
 	Quantity float64 `json:"Quantity"`
 	Rate     float64 `json:"Rate"`
 }
