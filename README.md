@@ -3,7 +3,16 @@ go-bittrex
 
 Go API for the Bittrex crypto-currency exchange.
 
-##Warning
+
+
+##Update about the warning
+I have contact whith Bittrex and :
+
+* They do not recieved my bug report. I trust them. 
+* I'll have an early access to their new API, and i'm going to continue working on the lib.
+* I'll remove the warning below in a few hours. 
+
+##Warning 
 Bittrex API presents somes problems (see below), due to lack of support from the bittrex team (bug report sent but no response), i've decided to stop the developpement of this lib.
 
 ### Problems with Bittrex 
