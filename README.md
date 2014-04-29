@@ -40,7 +40,7 @@ I could hack this, but it would be better if Bittrex correct its API.
 For exemple there 2 authentifications procedures, dependind on the method called.
 And they annoounce a thirth one....
 
-#### Doc need update
+#### Doc needs updates
 See for example /account/getdeposithistory (new in v1.1)
 
 Request is just a copy & past of getwithdrawalhistory
