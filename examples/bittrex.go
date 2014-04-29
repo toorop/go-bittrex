@@ -32,11 +32,10 @@ func main() {
 	*/
 
 	// Market history
-	marketHistory, err := bittrex.GetMarketHistory("BTC-QBC", 100)
-	//fmt.Println(err, marketHistory)
+	/*marketHistory, err := bittrex.GetMarketHistory("BTC-QBC", 100)
 	for _, trade := range marketHistory {
 		fmt.Println(err, trade.Timestamp.String(), trade.Price)
-	}
+	}*/
 
 	// Account
 
@@ -49,7 +48,7 @@ func main() {
 	fmt.Println(err, balance)*/
 
 	// Get address
-	/*address, err := bittrex.GetDepositAddress("QBCT")
+	/*address, err := bittrex.GetDepositAddress("QBC")
 	fmt.Println(err, address)*/
 
 	// WithDraw
@@ -63,5 +62,9 @@ func main() {
 	// Get getwithdrawal history
 	/*withdrawalHistory, err := bittrex.GetWithdrawalHistory("all", 0)
 	fmt.Println(err, withdrawalHistory)*/
+
+	// Get history
+	deposits, err := bittrex.GetDepositHistory("all", 0)
+	fmt.Println(err, deposits)
 
 }

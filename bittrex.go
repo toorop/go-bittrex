@@ -251,7 +251,7 @@ func (b *bittrex) GetOrderHistory(market string, count int) (orders []Order, err
 }
 
 // GetWithdrawalHistory is used to retrieve your withdrawal history
-// currency string a string literal for the currecy (ie. BTC). IIf set to "all", will return for all currencies
+// currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 // count int the number of records to return. Is set to 0 will return the max set.
 func (b *bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals []Withdrawal, err error) {
 	req := fmt.Sprintf("v1.1/account/getwithdrawalhistory")
@@ -277,5 +277,35 @@ func (b *bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals 
 		return
 	}
 	json.Unmarshal(response.Result, &withdrawals)
+	return
+}
+
+// GetDepositHistory is used to retrieve your deposit history
+// currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
+// count int the number of records to return. Is set to 0 will return the max set.
+func (b *bittrex) GetDepositHistory(currency string, count int) (deposits []Deposit, err error) {
+	req := fmt.Sprintf("v1/account/getdeposithistory")
+	if count != 0 || currency != "all" {
+		req += "?"
+	}
+	if count != 0 {
+		req += fmt.Sprintf("count=%d&", count)
+	}
+	if currency != "all" {
+		req += "currency=" + currency
+	}
+	r, err := b.client.do("GET", req, "")
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if !response.Success {
+		err = errors.New(response.Message)
+		return
+	}
+	json.Unmarshal(response.Result, &deposits)
 	return
 }
