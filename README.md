@@ -47,7 +47,7 @@ Request is just a copy & past of getwithdrawalhistory
 If you try a /account/getdeposithistory you will have a 404
 
 #### Lack of support
-A 5 days ago i've send an email about RFC compliance problem. No response yet.
+5 days ago i've send an email about RFC compliance problem. No response yet.
 
 
 I hope all this problems will be fixed soon.
