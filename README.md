@@ -37,8 +37,7 @@ http://golang.org/pkg/net/textproto/#CanonicalMIMEHeaderKey
 I could hack this, but it would be better if Bittrex correct its API.
 
 #### It's seems that they don't know where they are going with the API
-For exemple there 2 authentifications procedures, dependind on the method called.
-And they annoounce a thirth one....
+For example, there is 2 authentications procedures, depending on the method called. And they've announced a third one...
 
 #### Doc needs updates
 See for example /account/getdeposithistory (new in v1.1)
