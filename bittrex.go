@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	API_BASE                   = "https://bittrex.com/api"
+	API_BASE                   = "https://bittrex.com/api/v1.1/"
 	API_VERSION                = "v1.1"
 	DEFAULT_HTTPCLIENT_TIMEOUT = 30
 )
@@ -22,9 +22,17 @@ func New(apiKey string) *bittrex {
 	return &bittrex{client}
 }
 
+// handleErr gets JSON response from Bittrex API en deal with error
+func handleErr(r jsonResponse) error {
+	if !r.Success {
+		return errors.New(r.Message)
+	}
+	return nil
+}
+
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
 func (b *bittrex) GetMarkets() (markets []Market, err error) {
-	r, err := b.client.do("GET", "v1/public/getmarkets", "")
+	r, err := b.client.do("GET", "public/getmarkets", "")
 	if err != nil {
 		return
 	}
@@ -32,17 +40,16 @@ func (b *bittrex) GetMarkets() (markets []Market, err error) {
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &markets)
+	err = json.Unmarshal(response.Result, &markets)
 	return
 }
 
 // GetTicker is used to get the current tick values for a market.
 func (b *bittrex) GetTicker(market string) (ticker Ticker, err error) {
-	r, err := b.client.do("GET", "v1/public/getticker?market="+strings.ToUpper(market), "")
+	r, err := b.client.do("GET", "public/getticker?market="+strings.ToUpper(market), "")
 	if err != nil {
 		return
 	}
@@ -50,11 +57,10 @@ func (b *bittrex) GetTicker(market string) (ticker Ticker, err error) {
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &ticker)
+	err = json.Unmarshal(response.Result, &ticker)
 	return
 }
 
@@ -68,11 +74,10 @@ func (b *bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err err
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &marketSummaries)
+	err = json.Unmarshal(response.Result, &marketSummaries)
 	return
 }
 
@@ -101,11 +106,10 @@ func (b *bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &orderBook)
+	err = json.Unmarshal(response.Result, &orderBook)
 	return
 }
 
@@ -129,11 +133,10 @@ func (b *bittrex) GetMarketHistory(market string, count int) (trades []Trade, er
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &trades)
+	err = json.Unmarshal(response.Result, &trades)
 	return
 }
 
@@ -150,11 +153,10 @@ func (b *bittrex) GetBalances() (balances []Balance, err error) {
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &balances)
+	err = json.Unmarshal(response.Result, &balances)
 	return
 }
 
@@ -170,11 +172,10 @@ func (b *bittrex) GetBalance(currency string) (balance Balance, err error) {
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &balance)
+	err = json.Unmarshal(response.Result, &balance)
 	return
 }
 
@@ -190,11 +191,10 @@ func (b *bittrex) GetDepositAddress(currency string) (address Address, err error
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &address)
+	err = json.Unmarshal(response.Result, &address)
 	return
 }
 
@@ -212,11 +212,10 @@ func (b *bittrex) Withdraw(address, currency string, quantity float64) (withdraw
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &withdrawUuid)
+	err = json.Unmarshal(response.Result, &withdrawUuid)
 	return
 }
 
@@ -242,11 +241,10 @@ func (b *bittrex) GetOrderHistory(market string, count int) (orders []Order, err
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &orders)
+	err = json.Unmarshal(response.Result, &orders)
 	return
 }
 
@@ -272,11 +270,10 @@ func (b *bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals 
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &withdrawals)
+	err = json.Unmarshal(response.Result, &withdrawals)
 	return
 }
 
@@ -302,10 +299,9 @@ func (b *bittrex) GetDepositHistory(currency string, count int) (deposits []Depo
 	if err = json.Unmarshal(r, &response); err != nil {
 		return
 	}
-	if !response.Success {
-		err = errors.New(response.Message)
+	if err = handleErr(response); err != nil {
 		return
 	}
-	json.Unmarshal(response.Result, &deposits)
+	err = json.Unmarshal(response.Result, &deposits)
 	return
 }
