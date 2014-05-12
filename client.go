@@ -14,10 +14,12 @@ type client struct {
 	httpClient *http.Client
 }
 
+// NewClient return a new Bittrex HTTP client
 func NewClient(apiKey string) (c *client) {
 	return &client{apiKey, &http.Client{}}
 }
 
+// doTimeoutRequest do a HTTP request with timeout
 func (c *client) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.Response, error) {
 	// Do the request in the background so we can check the timeout
 	type result struct {
@@ -34,12 +36,11 @@ func (c *client) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.R
 	case r := <-done:
 		return r.resp, r.err
 	case <-timer.C:
-		// Kill the connection on timeout so we don't leak sockets or goroutines
-		//c.client.Transport.CancelRequest(req)
 		return nil, errors.New("timeout on reading data from Bittrex API")
 	}
 }
 
+// do prepare and process HTTP request to Bittrex API
 func (c *client) do(method string, ressource string, payload string) (response []byte, err error) {
 	connectTimer := time.NewTimer(DEFAULT_HTTPCLIENT_TIMEOUT * time.Second)
 
