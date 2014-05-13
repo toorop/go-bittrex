@@ -34,6 +34,8 @@ func main() {
 
 See ["Examples" folder for more... examples](https://github.com/Toorop/go-bittrex/blob/master/examples/bittrex.go)
 
+## Documentation
+[![GoDoc](https://godoc.org/github.com/Toorop/go-bittrex?status.png)](https://godoc.org/github.com/Toorop/go-bittrex)
 
 
 ## Stay tuned
