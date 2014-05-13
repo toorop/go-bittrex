@@ -43,7 +43,8 @@ func main() {
 		marketHistory, err := bittrex.GetMarketHistory("BTC-DRK", 100)
 		for _, trade := range marketHistory {
 			fmt.Println(err, trade.Timestamp.String(), trade.Quantity, trade.Price)
-		}*/
+		}
+	*/
 
 	// Market
 
@@ -67,7 +68,7 @@ func main() {
 
 	// Cancel Order
 	/*
-		err := bittrex.CancelOrder("1395ee07-9803-409d-9972-0f281d3f17f")
+		err := bittrex.CancelOrder("e3b4b704-2aca-4b8c-8272-50fada7de474")
 		fmt.Println(err)
 	*/
 
@@ -114,7 +115,7 @@ func main() {
 		fmt.Println(err, withdrawalHistory)
 	*/
 
-	// Get history
+	// Get deposit history
 	/*
 		deposits, err := bittrex.GetDepositHistory("all", 0)
 		fmt.Println(err, deposits)
