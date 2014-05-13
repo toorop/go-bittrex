@@ -15,11 +15,6 @@ const (
 	DEFAULT_HTTPCLIENT_TIMEOUT = 30                         // HTTP client timeout
 )
 
-// bittrex represent a bittrex client
-type Bittrex struct {
-	client *client
-}
-
 // New return a instanciate bittrex struct
 func New(apiKey, apiSecret string) *Bittrex {
 	client := NewClient(apiKey, apiSecret)
@@ -32,6 +27,11 @@ func handleErr(r jsonResponse) error {
 		return errors.New(r.Message)
 	}
 	return nil
+}
+
+// bittrex represent a bittrex client
+type Bittrex struct {
+	client *client
 }
 
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
