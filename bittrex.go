@@ -1,4 +1,4 @@
-// Package bittrex is an implementation of the Biitrex API (public and private).
+// Package Bittrex is an implementation of the Biitrex API (public and private).
 package bittrex
 
 import (
@@ -35,7 +35,7 @@ type Bittrex struct {
 }
 
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
-func (b *bittrex) GetMarkets() (markets []Market, err error) {
+func (b *Bittrex) GetMarkets() (markets []Market, err error) {
 	r, err := b.client.do("GET", "public/getmarkets", "", false)
 	if err != nil {
 		return
@@ -52,7 +52,7 @@ func (b *bittrex) GetMarkets() (markets []Market, err error) {
 }
 
 // GetTicker is used to get the current ticker values for a market.
-func (b *bittrex) GetTicker(market string) (ticker Ticker, err error) {
+func (b *Bittrex) GetTicker(market string) (ticker Ticker, err error) {
 	r, err := b.client.do("GET", "public/getticker?market="+strings.ToUpper(market), "", false)
 	if err != nil {
 		return
@@ -69,7 +69,7 @@ func (b *bittrex) GetTicker(market string) (ticker Ticker, err error) {
 }
 
 // GetMarketSummaries is used to get the last 24 hour summary of all active exchanges
-func (b *bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err error) {
+func (b *Bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err error) {
 	r, err := b.client.do("GET", "public/getmarketsummaries", "", false)
 	if err != nil {
 		return
@@ -89,7 +89,7 @@ func (b *bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err err
 // market: a string literal for the market (ex: BTC-LTC)
 // cat: buy, sell or both to identify the type of orderbook to return.
 // depth: how deep of an order book to retrieve. Max is 100
-func (b *bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBook, err error) {
+func (b *Bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBook, err error) {
 	if cat != "buy" && cat != "sell" && cat != "both" {
 		cat = "both"
 	}
@@ -117,7 +117,7 @@ func (b *bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 // GetMarketHistory is used to retrieve the latest trades that have occured for a specific market.
 // mark a string literal for the market (ex: BTC-LTC)
 // count a number between 1-100 for the number of entries to return
-func (b *bittrex) GetMarketHistory(market string, count int) (trades []Trade, err error) {
+func (b *Bittrex) GetMarketHistory(market string, count int) (trades []Trade, err error) {
 	if count > 100 {
 		count = 100
 	}
@@ -142,7 +142,7 @@ func (b *bittrex) GetMarketHistory(market string, count int) (trades []Trade, er
 // Market
 
 // BuyLimit is used to place a limited buy order in a specific market.
-func (b *bittrex) BuyLimit(market string, quantity, rate float64) (uuid string, err error) {
+func (b *Bittrex) BuyLimit(market string, quantity, rate float64) (uuid string, err error) {
 	r, err := b.client.do("GET", "market/buylimit?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64)+"&rate="+strconv.FormatFloat(rate, 'f', 8, 64), "", true)
 	if err != nil {
 		return
@@ -161,7 +161,7 @@ func (b *bittrex) BuyLimit(market string, quantity, rate float64) (uuid string, 
 }
 
 // BuyMarket is used to place a market buy order in a spacific market.
-func (b *bittrex) BuyMarket(market string, quantity float64) (uuid string, err error) {
+func (b *Bittrex) BuyMarket(market string, quantity float64) (uuid string, err error) {
 	r, err := b.client.do("GET", "market/buymarket?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64), "", true)
 	if err != nil {
 		return
@@ -180,7 +180,7 @@ func (b *bittrex) BuyMarket(market string, quantity float64) (uuid string, err e
 }
 
 // SellLimit is used to place a limited sell order in a specific market.
-func (b *bittrex) SellLimit(market string, quantity, rate float64) (uuid string, err error) {
+func (b *Bittrex) SellLimit(market string, quantity, rate float64) (uuid string, err error) {
 	r, err := b.client.do("GET", "market/selllimit?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64)+"&rate="+strconv.FormatFloat(rate, 'f', 8, 64), "", true)
 	if err != nil {
 		return
@@ -199,7 +199,7 @@ func (b *bittrex) SellLimit(market string, quantity, rate float64) (uuid string,
 }
 
 // SellMarket is used to place a market sell order in a specific market.
-func (b *bittrex) SellMarket(market string, quantity float64) (uuid string, err error) {
+func (b *Bittrex) SellMarket(market string, quantity float64) (uuid string, err error) {
 	r, err := b.client.do("GET", "market/selllimit?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64), "", true)
 	if err != nil {
 		return
@@ -218,7 +218,7 @@ func (b *bittrex) SellMarket(market string, quantity float64) (uuid string, err 
 }
 
 // CancelOrder is used to cancel a buy or sell order.
-func (b *bittrex) CancelOrder(orderID string) (err error) {
+func (b *Bittrex) CancelOrder(orderID string) (err error) {
 	r, err := b.client.do("GET", "market/cancel?uuid="+orderID, "", true)
 	if err != nil {
 		return
@@ -234,7 +234,7 @@ func (b *bittrex) CancelOrder(orderID string) (err error) {
 // GetOpenOrders returns orders that you currently have opened.
 // If market is set to "all", GetOpenOrders return all orders
 // If market is set to a specific order, GetOpenOrders return orders for this market
-func (b *bittrex) GetOpenOrders(market string) (openOrders []Order, err error) {
+func (b *Bittrex) GetOpenOrders(market string) (openOrders []Order, err error) {
 	ressource := "market/getopenorders"
 	if market != "all" {
 		ressource += "?market=" + strings.ToUpper(market)
@@ -257,7 +257,7 @@ func (b *bittrex) GetOpenOrders(market string) (openOrders []Order, err error) {
 // Account
 
 // GetBalances is used to retrieve all balances from your account
-func (b *bittrex) GetBalances() (balances map[string]Balance, err error) {
+func (b *Bittrex) GetBalances() (balances map[string]Balance, err error) {
 	r, err := b.client.do("GET", "account/getbalances", "", true)
 	if err != nil {
 		return
@@ -275,7 +275,7 @@ func (b *bittrex) GetBalances() (balances map[string]Balance, err error) {
 
 // Getbalance is used to retrieve the balance from your account for a specific currency.
 // currency: a string literal for the currency (ex: LTC)
-func (b *bittrex) GetBalance(currency string) (balance Balance, err error) {
+func (b *Bittrex) GetBalance(currency string) (balance Balance, err error) {
 	r, err := b.client.do("GET", "account/getbalance?currency="+strings.ToUpper(currency), "", true)
 	if err != nil {
 		return
@@ -293,7 +293,7 @@ func (b *bittrex) GetBalance(currency string) (balance Balance, err error) {
 
 // GetDepositAddress is sed to generate or retrieve an address for a specific currency.
 // currency a string literal for the currency (ie. BTC)
-func (b *bittrex) GetDepositAddress(currency string) (address Address, err error) {
+func (b *Bittrex) GetDepositAddress(currency string) (address Address, err error) {
 	r, err := b.client.do("GET", "account/getdepositaddress?currency="+strings.ToUpper(currency), "", true)
 	if err != nil {
 		return
@@ -313,7 +313,7 @@ func (b *bittrex) GetDepositAddress(currency string) (address Address, err error
 // address string the address where to send the funds.
 // currency string literal for the currency (ie. BTC)
 // quantity float the quantity of coins to withdraw
-func (b *bittrex) Withdraw(address, currency string, quantity float64) (withdrawUuid string, err error) {
+func (b *Bittrex) Withdraw(address, currency string, quantity float64) (withdrawUuid string, err error) {
 	r, err := b.client.do("GET", "account/withdraw?currency="+strings.ToUpper(currency)+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64)+"&address="+address, "", true)
 	if err != nil {
 		return
@@ -334,7 +334,7 @@ func (b *bittrex) Withdraw(address, currency string, quantity float64) (withdraw
 // GetOrderHistory used to retrieve your order history.
 // market string literal for the market (ie. BTC-LTC). If set to "all", will return for all market
 // count int : 	the number of records to return. Is set to 0, will return max history
-func (b *bittrex) GetOrderHistory(market string, count int) (orders []Order, err error) {
+func (b *Bittrex) GetOrderHistory(market string, count int) (orders []Order, err error) {
 	ressource := "account/getorderhistory"
 	if count != 0 || market != "all" {
 		ressource += "?"
@@ -363,7 +363,7 @@ func (b *bittrex) GetOrderHistory(market string, count int) (orders []Order, err
 // GetWithdrawalHistory is used to retrieve your withdrawal history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 // count int the number of records to return. Is set to 0 will return the max set.
-func (b *bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals []Withdrawal, err error) {
+func (b *Bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals []Withdrawal, err error) {
 	ressource := "account/getwithdrawalhistory"
 	if count != 0 || currency != "all" {
 		ressource += "?"
@@ -392,7 +392,7 @@ func (b *bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals 
 // GetDepositHistory is used to retrieve your deposit history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 // count int the number of records to return. Is set to 0 will return the max set.
-func (b *bittrex) GetDepositHistory(currency string, count int) (deposits []Deposit, err error) {
+func (b *Bittrex) GetDepositHistory(currency string, count int) (deposits []Deposit, err error) {
 	ressource := "account/getdeposithistory"
 	if count != 0 || currency != "all" {
 		ressource += "?"
