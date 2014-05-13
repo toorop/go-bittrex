@@ -18,7 +18,7 @@ const (
 // New return a instanciate bittrex struct
 func New(apiKey, apiSecret string) *Bittrex {
 	client := NewClient(apiKey, apiSecret)
-	return &bittrex{client}
+	return &Bittrex{client}
 }
 
 // handleErr gets JSON response from Bittrex API en deal with error
