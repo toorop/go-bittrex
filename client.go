@@ -1,6 +1,9 @@
 package bittrex
 
 import (
+	"crypto/hmac"
+	"crypto/sha512"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -11,12 +14,13 @@ import (
 
 type client struct {
 	apiKey     string
+	apiSecret  string
 	httpClient *http.Client
 }
 
 // NewClient return a new Bittrex HTTP client
-func NewClient(apiKey string) (c *client) {
-	return &client{apiKey, &http.Client{}}
+func NewClient(apiKey, apiSecret string) (c *client) {
+	return &client{apiKey, apiSecret, &http.Client{}}
 }
 
 // doTimeoutRequest do a HTTP request with timeout
@@ -41,12 +45,11 @@ func (c *client) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.R
 }
 
 // do prepare and process HTTP request to Bittrex API
-func (c *client) do(method string, ressource string, payload string) (response []byte, err error) {
+func (c *client) do(method string, ressource string, payload string, authNeeded bool) (response []byte, err error) {
 	connectTimer := time.NewTimer(DEFAULT_HTTPCLIENT_TIMEOUT * time.Second)
+	rawurl := fmt.Sprintf("%s%s/%s", API_BASE, API_VERSION, ressource)
 
-	query := fmt.Sprintf("%s/%s", API_BASE, ressource)
-	//fmt.Println(query)
-	req, err := http.NewRequest(method, query, strings.NewReader(payload))
+	req, err := http.NewRequest(method, rawurl, strings.NewReader(payload))
 	if err != nil {
 		return
 	}
@@ -54,6 +57,24 @@ func (c *client) do(method string, ressource string, payload string) (response [
 		req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	}
 	req.Header.Add("Accept", "application/json")
+
+	// Auth
+	if authNeeded {
+		if len(c.apiKey) == 0 || len(c.apiSecret) == 0 {
+			err = errors.New("You need to set API Key and API Secret to call this method")
+			return
+		}
+		nonce := time.Now().UnixNano()
+		q := req.URL.Query()
+		q.Set("apikey", c.apiKey)
+		q.Set("nonce", fmt.Sprintf("%d", nonce))
+		req.URL.RawQuery = q.Encode()
+		mac := hmac.New(sha512.New, []byte(c.apiSecret))
+		_, err = mac.Write([]byte(req.URL.String()))
+		sig := hex.EncodeToString(mac.Sum(nil))
+		req.Header.Add("apisign", sig)
+	}
+
 	req.Header.Add("APIKEY", c.apiKey)
 	//fmt.Println(req)
 	resp, err := c.doTimeoutRequest(connectTimer, req)
