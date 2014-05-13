@@ -1,3 +1,4 @@
+// Package bittrex is an implementation of the Biitrex API (public and private).
 package bittrex
 
 import (
@@ -15,12 +16,12 @@ const (
 )
 
 // bittrex represent a bittrex client
-type bittrex struct {
+type Bittrex struct {
 	client *client
 }
 
 // New return a instanciate bittrex struct
-func New(apiKey, apiSecret string) *bittrex {
+func New(apiKey, apiSecret string) *Bittrex {
 	client := NewClient(apiKey, apiSecret)
 	return &bittrex{client}
 }

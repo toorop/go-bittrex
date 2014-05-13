@@ -1,11 +1,47 @@
 go-bittrex
 ==========
 
-Go API for the Bittrex crypto-currency exchange.
+go-bittrex is an implementation of the Bittrex API (public and private) in Golang.
 
-## Warning: New Auth
-I will update this API as soon as possible to implement the new HMAC authentification method.
+This version implement V1.1 Bittrex API and the new HMAC authentification.
 
-Probably next week.
+## Import
+	import "github.com/Toorop/go-bittrex"
+	
+## Usage
+~~~ go
+package main
 
-Stay tuned: [ https://twitter.com/poroot](https://twitter.com/poroot)
+import (
+	"fmt"
+	"github.com/toorop/go-bittrex"
+)
+
+const (
+	API_KEY    = "YOUR_API_KEY"
+	API_SECRET = "YOUR_API_SECRET"
+)
+
+func main() {
+	// Bittrex client
+	bittrex := bittrex.New(API_KEY, API_SECRET)
+
+	// Get markets
+	markets, err := bittrex.GetMarkets()
+	fmt.Println(err, markets)
+}
+~~~	
+
+See ["Examples" folder for more... examples](https://github.com/Toorop/go-bittrex/blob/master/examples/bittrex.go)
+
+
+
+## Stay tuned
+[Follow me on Twitter](https://twitter.com/poroot)
+
+Donate
+------
+
+![Donation QR](http://api.qrserver.com/v1/create-qr-code/?size=200x200&data=bitcoin:1HgpsmxV52eAjDcoNpVGpYEhGfgN7mM1JB%3Flabel%3DToorop)
+
+[1HgpsmxV52eAjDcoNpVGpYEhGfgN7mM1JB](http://tinyurl.com/mccsoez)
