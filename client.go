@@ -75,8 +75,6 @@ func (c *client) do(method string, ressource string, payload string, authNeeded 
 		req.Header.Add("apisign", sig)
 	}
 
-	req.Header.Add("APIKEY", c.apiKey)
-	//fmt.Println(req)
 	resp, err := c.doTimeoutRequest(connectTimer, req)
 	if err != nil {
 		return
