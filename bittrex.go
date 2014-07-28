@@ -36,7 +36,7 @@ type Bittrex struct {
 
 // GetCandles is used to get the ohlcv.
 func (b *Bittrex) GetCandles(market string) (candles []Candle, err error) {
-	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?MarketName=BTC-BC", "", false)
+	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?MarketName="+strings.ToUpper(market), "", false)
 	if err != nil {
 		return
 	}
