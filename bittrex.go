@@ -34,6 +34,20 @@ type Bittrex struct {
 	client *client
 }
 
+// GetCandles is used to get the ohlcv.
+func (b *Bittrex) GetCandles(market string) (candles []Candle, err error) {
+	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?MarketName=BTC-BC", "", false)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(r, &candles); err != nil {
+		return
+	}
+
+	return
+}
+
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
 func (b *Bittrex) GetMarkets() (markets []Market, err error) {
 	r, err := b.client.do("GET", "public/getmarkets", "", false)
