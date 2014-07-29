@@ -8,3 +8,7 @@ type Candle struct {
 	Low       float64
 	Volume    float64
 }
+
+type NewCandles struct {
+	Ticks []Candle `json:"ticks"`
+}

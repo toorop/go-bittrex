@@ -56,9 +56,15 @@ func (b *Bittrex) GetNewCandles(market, LastEpoch string) (candles []Candle, err
 		return
 	}
 
-	if err = json.Unmarshal(r, &candles); err != nil {
+	var newCandles NewCandles
+	if err = json.Unmarshal(r, &newCandles); err != nil {
 		return
 	}
+	if err != nil {
+		return
+	}
+
+	candles = newCandles.Ticks
 
 	return
 }
