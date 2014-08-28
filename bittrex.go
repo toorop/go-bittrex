@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -32,6 +33,40 @@ func handleErr(r jsonResponse) error {
 // bittrex represent a bittrex client
 type Bittrex struct {
 	client *client
+}
+
+// GetCandles is used to get the ohlcv.
+func (b *Bittrex) GetHisCandles(market string) (candles []Candle, err error) {
+	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?MarketName="+strings.ToUpper(market)+fmt.Sprintf("&_=%d", rand.Float64()), "", false)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(r, &candles); err != nil {
+		return
+	}
+
+	return
+}
+
+// GetCandles is used to get the ohlcv.
+func (b *Bittrex) GetNewCandles(market, LastEpoch string) (candles []Candle, err error) {
+	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetNewTickData?MarketName="+strings.ToUpper(market)+"&LastEpoch="+LastEpoch, "", false)
+	if err != nil {
+		return
+	}
+
+	var newCandles NewCandles
+	if err = json.Unmarshal(r, &newCandles); err != nil {
+		return
+	}
+	if err != nil {
+		return
+	}
+
+	candles = newCandles.Ticks
+
+	return
 }
 
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
