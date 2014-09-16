@@ -1,4 +1,4 @@
-// Package Bittrex is an implementation of the Biitrex API (public and private).
+// Package Bittrex is an implementation of the Biitrex API in Golang.
 package bittrex
 
 import (
@@ -257,7 +257,7 @@ func (b *Bittrex) GetOpenOrders(market string) (openOrders []Order, err error) {
 // Account
 
 // GetBalances is used to retrieve all balances from your account
-func (b *Bittrex) GetBalances() (balances map[string]Balance, err error) {
+func (b *Bittrex) GetBalances() (balances []Balance, err error) {
 	r, err := b.client.do("GET", "account/getbalances", "", true)
 	if err != nil {
 		return
