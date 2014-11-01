@@ -14,6 +14,12 @@ func main() {
 	// Bittrex client
 	bittrex := bittrex.New(API_KEY, API_SECRET)
 
+	// Get Candle ( OHLCV )
+	/*
+		markets, err := bittrex.GetHisCandles("BTC-LTC", "hour")
+		fmt.Println(markets, err)
+	 */
+
 	// Get markets
 	/*
 		markets, err := bittrex.GetMarkets()

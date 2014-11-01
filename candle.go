@@ -1,12 +1,12 @@
 package bittrex
 
 type Candle struct {
-	TimeStamp string
-	Open      float64
-	Close     float64
-	High      float64
-	Low       float64
-	Volume    float64
+	TimeStamp CandleTime `json:"T"`
+	Open      float64    `json:"O"`
+	Close     float64    `json:"C"`
+	High      float64    `json:"H"`
+	Low       float64    `json:"L"`
+	Volume    float64    `json:"V"`
 }
 
 type NewCandles struct {
