@@ -36,8 +36,13 @@ type Bittrex struct {
 }
 
 // GetCandles is used to get the ohlcv.
-func (b *Bittrex) GetHisCandles(market string) (candles []Candle, err error) {
-	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?MarketName="+strings.ToUpper(market)+fmt.Sprintf("&_=%d", rand.Float64()), "", false)
+func (b *Bittrex) GetHisCandles(market string, interval string) (candles []Candle, err error) {
+	_, presence := CANDLE_INTERVALS[interval]
+	if presence == false{
+		return candles, errors.New("Wrong interval")
+	}
+
+	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?interval=" + interval +"&MarketName="+strings.ToUpper(market)+fmt.Sprintf("&_=%d", rand.Int()), "", false)
 	if err != nil {
 		return
 	}
