@@ -457,3 +457,23 @@ func (b *Bittrex) GetDepositHistory(currency string, count int) (deposits []Depo
 	err = json.Unmarshal(response.Result, &deposits)
 	return
 }
+
+func (b *Bittrex) GetOrder(order_uuid string) (order Order2, err error) {
+	
+	ressource := "account/getorder?uuid="+order_uuid
+	
+	r, err := b.client.do("GET", ressource, "", true)
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	err = json.Unmarshal(response.Result, &order)
+	return
+}
+
