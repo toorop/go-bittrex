@@ -156,10 +156,10 @@ func (b *Bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 
 // GetMarketHistory is used to retrieve the latest trades that have occured for a specific market.
 // mark a string literal for the market (ex: BTC-LTC)
-// count a number between 1-100 for the number of entries to return
+// count a number between 1-50 for the number of entries to return
 func (b *Bittrex) GetMarketHistory(market string, count int) (trades []Trade, err error) {
-	if count > 100 {
-		count = 100
+	if count > 50 {
+		count = 50
 	}
 	if count < 1 {
 		count = 1
