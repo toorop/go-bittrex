@@ -125,6 +125,23 @@ func (b *Bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err err
 	return
 }
 
+// GetMarketSummary is used to get the last 24 hour summary for a given market
+func (b *Bittrex) GetMarketSummary(market string) (marketSummary []MarketSummary, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("public/getmarketsummary?market=%s", strings.ToUpper(market)), "", false)
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if err = handleErr(response); err != nil {
+		return
+	}
+	err = json.Unmarshal(response.Result, &marketSummary)
+	return
+}
+
 // GetOrderBook is used to get retrieve the orderbook for a given market
 // market: a string literal for the market (ex: BTC-LTC)
 // cat: buy, sell or both to identify the type of orderbook to return.
