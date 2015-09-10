@@ -35,14 +35,34 @@ type Bittrex struct {
 	client *client
 }
 
+// GetDistribution is used to get the distribution.
+func (b *Bittrex) GetDistribution(market string) (distribution Distribution, err error) {
+	r, err := b.client.do("GET", "https://bittrex.com/Api/v2.0/pub/currency/GetBalanceDistribution?currencyName="+strings.ToUpper(market), "", false)
+	if err != nil {
+		return
+	}
+
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+
+	if err = handleErr(response); err != nil {
+		return
+	}
+	err = json.Unmarshal(response.Result, &distribution)
+	return
+
+}
+
 // GetCandles is used to get the ohlcv.
 func (b *Bittrex) GetHisCandles(market string, interval string) (candles []Candle, err error) {
 	_, presence := CANDLE_INTERVALS[interval]
-	if presence == false{
+	if presence == false {
 		return candles, errors.New("Wrong interval")
 	}
 
-	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?interval=" + interval +"&MarketName="+strings.ToUpper(market)+fmt.Sprintf("&_=%d", rand.Int()), "", false)
+	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?interval="+interval+"&MarketName="+strings.ToUpper(market)+fmt.Sprintf("&_=%d", rand.Int()), "", false)
 	if err != nil {
 		return
 	}
@@ -476,9 +496,9 @@ func (b *Bittrex) GetDepositHistory(currency string, count int) (deposits []Depo
 }
 
 func (b *Bittrex) GetOrder(order_uuid string) (order Order2, err error) {
-	
-	ressource := "account/getorder?uuid="+order_uuid
-	
+
+	ressource := "account/getorder?uuid=" + order_uuid
+
 	r, err := b.client.do("GET", ressource, "", true)
 	if err != nil {
 		return
@@ -493,4 +513,3 @@ func (b *Bittrex) GetOrder(order_uuid string) (order Order2, err error) {
 	err = json.Unmarshal(response.Result, &order)
 	return
 }
-
