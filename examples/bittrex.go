@@ -18,7 +18,7 @@ func main() {
 	/*
 		markets, err := bittrex.GetHisCandles("BTC-LTC", "hour")
 		fmt.Println(markets, err)
-	 */
+	*/
 
 	// Get markets
 	/*
@@ -31,6 +31,14 @@ func main() {
 		ticker, err := bittrex.GetTicker("BTC-DRK")
 		fmt.Println(err, ticker)
 	*/
+
+    // Get Distribution (JBS)
+    /*
+	distribution, err := bittrex.GetDistribution("JBS")
+	for _, balance := range distribution.Distribution {
+		fmt.Println(balance.BalanceD)
+	}
+    */
 
 	// Get market summaries
 	/*
