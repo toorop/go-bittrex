@@ -32,18 +32,24 @@ func main() {
 		fmt.Println(err, ticker)
 	*/
 
-    // Get Distribution (JBS)
-    /*
-	distribution, err := bittrex.GetDistribution("JBS")
-	for _, balance := range distribution.Distribution {
-		fmt.Println(balance.BalanceD)
-	}
-    */
+        // Get Distribution (JBS)
+        /*
+            distribution, err := bittrex.GetDistribution("JBS")
+            for _, balance := range distribution.Distribution {
+                    fmt.Println(balance.BalanceD)
+            }
+        */
 
 	// Get market summaries
 	/*
 		marketSummaries, err := bittrex.GetMarketSummaries()
 		fmt.Println(err, marketSummaries)
+	*/
+
+        // Get market summary
+	/*
+                marketSummary, err := bittrex.GetMarketSummary("BTC-ETH")
+                fmt.Println(err, marketSummary)
 	*/
 
 	// Get orders book
