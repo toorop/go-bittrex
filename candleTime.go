@@ -5,10 +5,10 @@ import (
 	"time"
 )
 
-var CANDLE_INTERVALS = map[string]bool {
+var CANDLE_INTERVALS = map[string]bool{
 	"tenmin": true,
-	"hour":	  true,
-	"day":	  true,
+	"hour":   true,
+	"day":    true,
 }
 
 type CandleTime struct {
