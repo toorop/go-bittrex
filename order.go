@@ -3,7 +3,7 @@ package bittrex
 type Order struct {
 	OrderUuid         string  `json:"OrderUuid"`
 	Exchange          string  `json:"Exchange"`
-	TimeStamp         string  `json:"TimeStamp"`
+	TimeStamp         jTime   `json:"TimeStamp"`
 	OrderType         string  `json:"OrderType"`
 	Limit             float64 `json:"Limit"`
 	Quantity          float64 `json:"Quantity"`
