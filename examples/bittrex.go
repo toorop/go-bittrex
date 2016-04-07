@@ -32,13 +32,13 @@ func main() {
 		fmt.Println(err, ticker)
 	*/
 
-        // Get Distribution (JBS)
-        /*
-            distribution, err := bittrex.GetDistribution("JBS")
-            for _, balance := range distribution.Distribution {
-                    fmt.Println(balance.BalanceD)
-            }
-        */
+	// Get Distribution (JBS)
+	/*
+		distribution, err := bittrex.GetDistribution("JBS")
+		for _, balance := range distribution.Distribution {
+			fmt.Println(balance.BalanceD)
+		}
+	*/
 
 	// Get market summaries
 	/*
@@ -46,16 +46,22 @@ func main() {
 		fmt.Println(err, marketSummaries)
 	*/
 
-        // Get market summary
+	// Get market summary
 	/*
-                marketSummary, err := bittrex.GetMarketSummary("BTC-ETH")
-                fmt.Println(err, marketSummary)
+		marketSummary, err := bittrex.GetMarketSummary("BTC-ETH")
+		fmt.Println(err, marketSummary)
 	*/
 
 	// Get orders book
 	/*
 		orderBook, err := bittrex.GetOrderBook("BTC-DRK", "both", 100)
 		fmt.Println(err, orderBook)
+	*/
+
+	// Get order book buy or sell side only
+	/*
+		orderb, err := bittrex.GetOrderBookBuySell("BTC-JBS", "buy", 100)
+		fmt.Println(err, orderb)
 	*/
 
 	// Market history

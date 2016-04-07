@@ -191,6 +191,35 @@ func (b *Bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 	return
 }
 
+// GetOrderBookBuySell is used to get retrieve the buy or sell side of an orderbook for a given market
+// market: a string literal for the market (ex: BTC-LTC)
+// cat: buy or sell to identify the type of orderbook to return.
+// depth: how deep of an order book to retrieve. Max is 100
+func (b *Bittrex) GetOrderBookBuySell(market, cat string, depth int) (orderb []Orderb, err error) {
+	if cat != "buy" && cat != "sell" {
+		cat = "buy"
+	}
+	if depth > 100 {
+		depth = 100
+	}
+	if depth < 1 {
+		depth = 1
+	}
+	r, err := b.client.do("GET", fmt.Sprintf("public/getorderbook?market=%s&type=%s&depth=%d", strings.ToUpper(market), cat, depth), "", false)
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if err = handleErr(response); err != nil {
+		return
+	}
+	err = json.Unmarshal(response.Result, &orderb)
+	return
+}
+
 // GetMarketHistory is used to retrieve the latest trades that have occured for a specific market.
 // mark a string literal for the market (ex: BTC-LTC)
 // count a number between 1-50 for the number of entries to return
