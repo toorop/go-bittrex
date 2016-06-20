@@ -306,7 +306,7 @@ func (b *Bittrex) SellLimit(market string, quantity, rate float64) (uuid string,
 
 // SellMarket is used to place a market sell order in a specific market.
 func (b *Bittrex) SellMarket(market string, quantity float64) (uuid string, err error) {
-	r, err := b.client.do("GET", "market/selllimit?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64), "", true)
+	r, err := b.client.do("GET", "market/sellmarket?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64), "", true)
 	if err != nil {
 		return
 	}
