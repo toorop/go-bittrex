@@ -11,5 +11,6 @@ type MarketSummary struct {
 	Volume         float64 `json:"Volume"`
 	Last           float64 `json:"Last"`
 	BaseVolume     float64 `json:"BaseVolume"`
+	PrevDay        float64 `json:"PrevDay"`
 	TimeStamp      string  `json:"TimeStamp"`
 }
