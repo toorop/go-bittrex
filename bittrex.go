@@ -94,6 +94,23 @@ func (b *Bittrex) GetNewCandles(market, LastEpoch string) (candles []Candle, err
 	return
 }
 
+// GetCurrencies is used to get all supported currencies at Bittrex along with other meta data.
+func (b *Bittrex) GetCurrencies() (currencies []Currency, err error) {
+	r, err := b.client.do("GET", "public/getcurrencies", "", false)
+	if err != nil {
+		return
+	}
+	var response jsonResponse
+	if err = json.Unmarshal(r, &response); err != nil {
+		return
+	}
+	if err = handleErr(response); err != nil {
+		return
+	}
+	err = json.Unmarshal(response.Result, &currencies)
+	return
+}
+
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
 func (b *Bittrex) GetMarkets() (markets []Market, err error) {
 	r, err := b.client.do("GET", "public/getmarkets", "", false)
