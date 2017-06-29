@@ -204,7 +204,15 @@ func (b *Bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 	if err = handleErr(response); err != nil {
 		return
 	}
-	err = json.Unmarshal(response.Result, &orderBook)
+
+	if cat == "buy" {
+		err = json.Unmarshal(response.Result, &orderBook.Buy)
+	} else if cat == "sell" {
+		err = json.Unmarshal(response.Result, &orderBook.Sell)
+	} else {
+		err = json.Unmarshal(response.Result, &orderBook)
+	}
+
 	return
 }
 
