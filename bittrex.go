@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -53,45 +52,6 @@ func (b *Bittrex) GetDistribution(market string) (distribution Distribution, err
 	err = json.Unmarshal(response.Result, &distribution)
 	return
 
-}
-
-// GetCandles is used to get the ohlcv.
-func (b *Bittrex) GetHisCandles(market string, interval string) (candles []Candle, err error) {
-	_, presence := CANDLE_INTERVALS[interval]
-	if presence == false {
-		return candles, errors.New("Wrong interval")
-	}
-
-	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetTickData?interval="+interval+"&MarketName="+strings.ToUpper(market)+fmt.Sprintf("&_=%d", rand.Int()), "", false)
-	if err != nil {
-		return
-	}
-
-	if err = json.Unmarshal(r, &candles); err != nil {
-		return
-	}
-
-	return
-}
-
-// GetCandles is used to get the ohlcv.
-func (b *Bittrex) GetNewCandles(market, LastEpoch string) (candles []Candle, err error) {
-	r, err := b.client.do("GET", "https://bittrex.com/Market/Pub_GetNewTickData?MarketName="+strings.ToUpper(market)+"&LastEpoch="+LastEpoch, "", false)
-	if err != nil {
-		return
-	}
-
-	var newCandles NewCandles
-	if err = json.Unmarshal(r, &newCandles); err != nil {
-		return
-	}
-	if err != nil {
-		return
-	}
-
-	candles = newCandles.Ticks
-
-	return
 }
 
 // GetCurrencies is used to get all supported currencies at Bittrex along with other meta data.
