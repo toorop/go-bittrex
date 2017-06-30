@@ -238,16 +238,9 @@ func (b *Bittrex) GetOrderBookBuySell(market, cat string, depth int) (orderb []O
 }
 
 // GetMarketHistory is used to retrieve the latest trades that have occured for a specific market.
-// mark a string literal for the market (ex: BTC-LTC)
-// count a number between 1-50 for the number of entries to return
-func (b *Bittrex) GetMarketHistory(market string, count int) (trades []Trade, err error) {
-	if count > 50 {
-		count = 50
-	}
-	if count < 1 {
-		count = 1
-	}
-	r, err := b.client.do("GET", fmt.Sprintf("public/getmarkethistory?market=%s&count=%d", strings.ToUpper(market), count), "", false)
+// market a string literal for the market (ex: BTC-LTC)
+func (b *Bittrex) GetMarketHistory(market string) (trades []Trade, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("public/getmarkethistory?market=%s", strings.ToUpper(market)), "", false)
 	if err != nil {
 		return
 	}
@@ -456,15 +449,8 @@ func (b *Bittrex) Withdraw(address, currency string, quantity float64) (withdraw
 
 // GetOrderHistory used to retrieve your order history.
 // market string literal for the market (ie. BTC-LTC). If set to "all", will return for all market
-// count int : 	the number of records to return. Is set to 0, will return max history
-func (b *Bittrex) GetOrderHistory(market string, count int) (orders []Order, err error) {
+func (b *Bittrex) GetOrderHistory(market string) (orders []Order, err error) {
 	ressource := "account/getorderhistory"
-	if count != 0 || market != "all" {
-		ressource += "?"
-	}
-	if count != 0 {
-		ressource += fmt.Sprintf("count=%d&", count)
-	}
 	if market != "all" {
 		ressource += "market=" + market
 	}
@@ -485,15 +471,8 @@ func (b *Bittrex) GetOrderHistory(market string, count int) (orders []Order, err
 
 // GetWithdrawalHistory is used to retrieve your withdrawal history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
-// count int the number of records to return. Is set to 0 will return the max set.
-func (b *Bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals []Withdrawal, err error) {
+func (b *Bittrex) GetWithdrawalHistory(currency string) (withdrawals []Withdrawal, err error) {
 	ressource := "account/getwithdrawalhistory"
-	if count != 0 || currency != "all" {
-		ressource += "?"
-	}
-	if count != 0 {
-		ressource += fmt.Sprintf("count=%d&", count)
-	}
 	if currency != "all" {
 		ressource += "currency=" + currency
 	}
@@ -514,15 +493,8 @@ func (b *Bittrex) GetWithdrawalHistory(currency string, count int) (withdrawals 
 
 // GetDepositHistory is used to retrieve your deposit history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
-// count int the number of records to return. Is set to 0 will return the max set.
-func (b *Bittrex) GetDepositHistory(currency string, count int) (deposits []Deposit, err error) {
+func (b *Bittrex) GetDepositHistory(currency string) (deposits []Deposit, err error) {
 	ressource := "account/getdeposithistory"
-	if count != 0 || currency != "all" {
-		ressource += "?"
-	}
-	if count != 0 {
-		ressource += fmt.Sprintf("count=%d&", count)
-	}
 	if currency != "all" {
 		ressource += "currency=" + currency
 	}
