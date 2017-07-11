@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 )
@@ -498,4 +499,37 @@ func (b *Bittrex) GetOrder(order_uuid string) (order Order2, err error) {
 	}
 	err = json.Unmarshal(response.Result, &order)
 	return
+}
+
+// GetTicks is used to get ticks history values for a market.
+func (b *Bittrex) GetTicks(market string, interval string) ([]Candle, error) {
+	_, ok := CANDLE_INTERVALS[interval]
+	if !ok {
+		return nil, errors.New("wrong interval")
+	}
+
+	endpoint := fmt.Sprintf(
+		"https://bittrex.com/Api/v2.0/pub/market/GetTicks?tickInterval=%s&marketName=%s&_=%d",
+		interval, strings.ToUpper(market), rand.Int(),
+	)
+	r, err := b.client.do("GET", endpoint, "", false)
+	if err != nil {
+		return nil, fmt.Errorf("could not get market ticks: %v", err)
+	}
+
+	var response jsonResponse
+	if err := json.Unmarshal(r, &response); err != nil {
+		return nil, err
+	}
+
+	if err := handleErr(response); err != nil {
+		return nil, err
+	}
+	var candles []Candle
+
+	if err := json.Unmarshal(response.Result, &candles); err != nil {
+		return nil, fmt.Errorf("could not unmarshal candles: %v", err)
+	}
+
+	return candles, nil
 }
