@@ -23,7 +23,7 @@ func New(apiKey, apiSecret string) *Bittrex {
 	return &Bittrex{client}
 }
 
-// New returns an instanciated bittrex struct with custom http client
+// NewWithCustomHttpClient returns an instanciated bittrex struct with custom http client
 func NewWithCustomHttpClient(apiKey, apiSecret string, httpClient *http.Client) *Bittrex {
 	client := NewClientWithCustomHttpConfig(apiKey, apiSecret, httpClient)
 	return &Bittrex{client}
