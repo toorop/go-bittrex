@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -16,9 +17,15 @@ const (
 	DEFAULT_HTTPCLIENT_TIMEOUT = 30                         // HTTP client timeout
 )
 
-// New return a instanciate bittrex struct
+// New returns an instanciated bittrex struct
 func New(apiKey, apiSecret string) *Bittrex {
 	client := NewClient(apiKey, apiSecret)
+	return &Bittrex{client}
+}
+
+// New returns an instanciated bittrex struct with custom http client
+func NewWithCustomHttpClient(apiKey, apiSecret string, httpClient *http.Client) *Bittrex {
+	client := NewClientWithCustomHttpConfig(apiKey, apiSecret, httpClient)
 	return &Bittrex{client}
 }
 
