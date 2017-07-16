@@ -43,7 +43,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-    "time"
+	"time"
 	"github.com/toorop/go-bittrex"
 )
 
@@ -54,15 +54,15 @@ const (
 
 func main() {
 	httpClient := &http.Client{
-        Timeout: time.Second * 10,
-    }
+		Timeout: time.Second * 10,
+	}
 
-    // Bittrex client
-    bc := bittrex.NewWithCustomHttpClient(conf.Bittrex.ApiKey, conf.Bittrex.ApiSecret, httpClient)
+	// Bittrex client
+	bc := bittrex.NewWithCustomHttpClient(conf.Bittrex.ApiKey, conf.Bittrex.ApiSecret, httpClient)
 
 	// Get markets
-    markets, err := bittrex.GetMarkets()
-    fmt.Println(err, markets)
+	markets, err := bittrex.GetMarkets()
+	fmt.Println(err, markets)
 }
 ~~~
 
