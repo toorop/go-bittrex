@@ -428,7 +428,7 @@ func (b *Bittrex) Withdraw(address, currency string, quantity float64) (withdraw
 func (b *Bittrex) GetOrderHistory(market string) (orders []Order, err error) {
 	ressource := "account/getorderhistory"
 	if market != "all" {
-		ressource += "market=" + market
+		ressource += "?market=" + market
 	}
 	r, err := b.client.do("GET", ressource, "", true)
 	if err != nil {
