@@ -14,6 +14,8 @@ import (
 const (
 	API_BASE                   = "https://bittrex.com/api/" // Bittrex API endpoint
 	API_VERSION                = "v1.1"                     // Bittrex API version
+	WS_BASE                    = "socket.bittrex.com"       // Bittrex WS API endpoint
+	WS_HUB                     = "CoreHub"                  // SignalR main hub
 	DEFAULT_HTTPCLIENT_TIMEOUT = 30                         // HTTP client timeout
 )
 
