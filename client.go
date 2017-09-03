@@ -27,7 +27,15 @@ func NewClient(apiKey, apiSecret string) (c *client) {
 // NewClientWithCustomHttpConfig returns a new Bittrex HTTP client using the predefined http client
 func NewClientWithCustomHttpConfig(apiKey, apiSecret string, httpClient *http.Client) (c *client) {
 	timeout := httpClient.Timeout
+	if timeout <= 0 {
+		timeout = 30 * time.Second
+	}
 	return &client{apiKey, apiSecret, httpClient, timeout}
+}
+
+// NewClient returns a new Bittrex HTTP client with custom timeout
+func NewClientWithCustomTimeout(apiKey, apiSecret string, timeout time.Duration) (c *client) {
+	return &client{apiKey, apiSecret, &http.Client{}, timeout}
 }
 
 // doTimeoutRequest do a HTTP request with timeout

@@ -9,23 +9,29 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
-	API_BASE                   = "https://bittrex.com/api/" // Bittrex API endpoint
-	API_VERSION                = "v1.1"                     // Bittrex API version
-	DEFAULT_HTTPCLIENT_TIMEOUT = 30                         // HTTP client timeout
+	API_BASE    = "https://bittrex.com/api/" // Bittrex API endpoint
+	API_VERSION = "v1.1"                     // Bittrex API version
 )
 
-// New returns an instanciated bittrex struct
+// New returns an instantiated bittrex struct
 func New(apiKey, apiSecret string) *Bittrex {
 	client := NewClient(apiKey, apiSecret)
 	return &Bittrex{client}
 }
 
-// NewWithCustomHttpClient returns an instanciated bittrex struct with custom http client
+// NewWithCustomHttpClient returns an instantiated bittrex struct with custom http client
 func NewWithCustomHttpClient(apiKey, apiSecret string, httpClient *http.Client) *Bittrex {
 	client := NewClientWithCustomHttpConfig(apiKey, apiSecret, httpClient)
+	return &Bittrex{client}
+}
+
+// NewWithCustomTimeout returns an instantiated bittrex struct with custom timeout
+func NewWithCustomTimeout(apiKey, apiSecret string, timeout time.Duration) *Bittrex {
+	client := NewClientWithCustomTimeout(apiKey, apiSecret, timeout)
 	return &Bittrex{client}
 }
 
