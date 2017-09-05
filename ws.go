@@ -7,37 +7,40 @@ import (
 	"github.com/thebotguys/signalr"
 )
 
-type orderUpdate struct {
+type OrderUpdate struct {
 	Orderb
 	Type int
 }
 
-type fill struct {
+type Fill struct {
 	Orderb
 	OrderType string
 	Timestamp jTime
 }
 
-type exchangeState struct {
+type ExchangeState struct {
 	MarketName string
 	Nounce     int
-	Buys       []orderUpdate
-	Sells      []orderUpdate
-	Fills      []fill
+	Buys       []OrderUpdate
+	Sells      []OrderUpdate
+	Fills      []Fill
+	Initial    bool
 }
 
-func (b *Bittrex) SubscribeOrderBook(market string, stop <-chan bool) error {
-	var lastNonce int
-	var states []exchangeState
+func (b *Bittrex) SubscribeExchangeUpdate(market string, dataCh chan<- ExchangeState, stop <-chan bool) error {
 	client := signalr.NewWebsocketClient()
+	sendUpdate := func(st ExchangeState) {
+		select {
+		case dataCh <- st:
+		default:
+		}
+	}
 	client.OnClientMethod = func(hub string, method string, messages []json.RawMessage) {
-		println(hub, method)
-		if method != "updateExchangeState" {
+		if hub != "CoreHub" || method != "updateExchangeState" {
 			return
 		}
-		isFirst := lastNonce == 0 && len(states) == 0
 		for _, msg := range messages {
-			var st exchangeState
+			var st ExchangeState
 			if err := json.Unmarshal(msg, &st); err != nil {
 				fmt.Println(err)
 				continue
@@ -45,14 +48,7 @@ func (b *Bittrex) SubscribeOrderBook(market string, stop <-chan bool) error {
 			if st.MarketName != market {
 				continue
 			}
-			if lastNonce == 0 {
-				states = append(states, st)
-				continue
-			}
-			fmt.Println(st)
-		}
-		if isFirst && len(states) > 0 {
-			// we've got first exchange update. we can now request the entire state.
+			sendUpdate(st)
 		}
 	}
 	if err := client.Connect("https", WS_BASE, []string{WS_HUB}); err != nil {
@@ -67,11 +63,12 @@ func (b *Bittrex) SubscribeOrderBook(market string, stop <-chan bool) error {
 	if err != nil {
 		return err
 	}
-	var st exchangeState
+	var st ExchangeState
 	if err := json.Unmarshal(msg, &st); err != nil {
-		fmt.Println(err)
 		return err
 	}
+	st.Initial = true
+	sendUpdate(st)
 	<-stop
 	return nil
 }
