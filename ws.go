@@ -2,6 +2,8 @@ package bittrex
 
 import (
 	"encoding/json"
+	"errors"
+	"time"
 
 	"github.com/thebotguys/signalr"
 )
@@ -53,13 +55,24 @@ func (b *Bittrex) SubscribeExchangeUpdate(market string, dataCh chan<- ExchangeS
 		return err
 	}
 	defer client.Close()
-	_, err := client.CallHub(WS_HUB, "SubscribeToExchangeDeltas", market)
-	if err != nil {
-		return err
-	}
-	msg, err := client.CallHub(WS_HUB, "QueryExchangeState", market)
-	if err != nil {
-		return err
+	errCh := make(chan error, 1)
+	var msg json.RawMessage
+	go func() {
+		_, err := client.CallHub(WS_HUB, "SubscribeToExchangeDeltas", market)
+		if err != nil {
+			errCh <- err
+			return
+		}
+		msg, err = client.CallHub(WS_HUB, "QueryExchangeState", market)
+		errCh <- err
+	}()
+	select {
+	case err := <-errCh:
+		if err != nil {
+			return err
+		}
+	case <-time.After(time.Second * 5):
+		return errors.New("callhub timeout")
 	}
 	var st ExchangeState
 	if err := json.Unmarshal(msg, &st); err != nil {
