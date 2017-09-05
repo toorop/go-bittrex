@@ -2,7 +2,6 @@ package bittrex
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/thebotguys/signalr"
 )
@@ -42,7 +41,6 @@ func (b *Bittrex) SubscribeExchangeUpdate(market string, dataCh chan<- ExchangeS
 		for _, msg := range messages {
 			var st ExchangeState
 			if err := json.Unmarshal(msg, &st); err != nil {
-				fmt.Println(err)
 				continue
 			}
 			if st.MarketName != market {
