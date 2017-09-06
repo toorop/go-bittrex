@@ -44,7 +44,7 @@ func doAsyncTimeout(f func() error, tmFunc func(error), timeout time.Duration) e
 	case err := <-errs:
 		return err
 	case <-time.After(timeout):
-		return errors.New("callhub timeout")
+		return errors.New("operation timeout")
 	}
 }
 
