@@ -30,7 +30,7 @@ func TestBittrexSubscribeOrderBook(t *testing.T) {
 		errCh <- bt.SubscribeExchangeUpdate("USDT-BTC", ch, nil)
 	}()
 	select {
-	case <-time.After(time.Second * 5):
+	case <-time.After(time.Second * 6):
 		t.Error("timeout")
 	case err := <-errCh:
 		if err != nil {

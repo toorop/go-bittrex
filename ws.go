@@ -111,6 +111,9 @@ func (b *Bittrex) SubscribeExchangeUpdate(market string, dataCh chan<- ExchangeS
 	}
 	st.Initial = true
 	sendStateAsync(dataCh, st)
-	<-stop
+	select {
+	case <-stop:
+	case <-client.DisconnectedChannel:
+	}
 	return nil
 }
