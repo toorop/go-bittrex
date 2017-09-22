@@ -13,19 +13,29 @@ import (
 )
 
 type client struct {
-	apiKey     string
-	apiSecret  string
-	httpClient *http.Client
+	apiKey      string
+	apiSecret   string
+	httpClient  *http.Client
+	httpTimeout time.Duration
 }
 
 // NewClient return a new Bittrex HTTP client
 func NewClient(apiKey, apiSecret string) (c *client) {
-	return &client{apiKey, apiSecret, &http.Client{}}
+	return &client{apiKey, apiSecret, &http.Client{}, 30 * time.Second}
 }
 
 // NewClientWithCustomHttpConfig returns a new Bittrex HTTP client using the predefined http client
 func NewClientWithCustomHttpConfig(apiKey, apiSecret string, httpClient *http.Client) (c *client) {
-	return &client{apiKey, apiSecret, httpClient}
+	timeout := httpClient.Timeout
+	if timeout <= 0 {
+		timeout = 30 * time.Second
+	}
+	return &client{apiKey, apiSecret, httpClient, timeout}
+}
+
+// NewClient returns a new Bittrex HTTP client with custom timeout
+func NewClientWithCustomTimeout(apiKey, apiSecret string, timeout time.Duration) (c *client) {
+	return &client{apiKey, apiSecret, &http.Client{}, timeout}
 }
 
 // doTimeoutRequest do a HTTP request with timeout
@@ -51,7 +61,7 @@ func (c *client) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.R
 
 // do prepare and process HTTP request to Bittrex API
 func (c *client) do(method string, ressource string, payload string, authNeeded bool) (response []byte, err error) {
-	connectTimer := time.NewTimer(DEFAULT_HTTPCLIENT_TIMEOUT * time.Second)
+	connectTimer := time.NewTimer(c.httpTimeout)
 
 	var rawurl string
 	if strings.HasPrefix(ressource, "http") {

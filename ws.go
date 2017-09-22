@@ -87,7 +87,7 @@ func (b *Bittrex) SubscribeExchangeUpdate(market string, dataCh chan<- ExchangeS
 	const timeout = 5 * time.Second
 	client := signalr.NewWebsocketClient()
 	client.OnClientMethod = func(hub string, method string, messages []json.RawMessage) {
-		if hub != "CoreHub" || method != "updateExchangeState" {
+		if hub != WS_HUB || method != "updateExchangeState" {
 			return
 		}
 		parseStates(messages, dataCh, market)
