@@ -19,6 +19,7 @@ type Fill struct {
 	Timestamp jTime
 }
 
+// ExchangeState contains fills and order book updates for a market.
 type ExchangeState struct {
 	MarketName string
 	Nounce     int
@@ -28,6 +29,9 @@ type ExchangeState struct {
 	Initial    bool
 }
 
+// doAsyncTimeout runs f in a different goroutine
+//	if f returns before timeout elapses, doAsyncTimeout returns the result of f().
+//	otherwise it returns "operation timeout" error, and calls tmFunc after f returns.
 func doAsyncTimeout(f func() error, tmFunc func(error), timeout time.Duration) error {
 	errs := make(chan error)
 	go func() {
@@ -76,6 +80,9 @@ func parseStates(messages []json.RawMessage, dataCh chan<- ExchangeState, market
 	}
 }
 
+// SubscribeExchangeUpdate subscribes for updates of the market.
+// Updates will be sent to dataCh.
+// To stop subscription, send to, or close 'stop'.
 func (b *Bittrex) SubscribeExchangeUpdate(market string, dataCh chan<- ExchangeState, stop <-chan bool) error {
 	const timeout = 5 * time.Second
 	client := signalr.NewWebsocketClient()
