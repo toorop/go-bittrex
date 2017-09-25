@@ -14,7 +14,9 @@ import (
 
 const (
 	API_BASE    = "https://bittrex.com/api/" // Bittrex API endpoint
-	API_VERSION = "v1.1"                     // Bittrex API version
+	API_VERSION = "v1.1"
+	WS_BASE     = "socket.bittrex.com" // Bittrex WS API endpoint
+	WS_HUB      = "CoreHub"            // SignalR main hub
 )
 
 // New returns an instantiated bittrex struct
