@@ -456,7 +456,7 @@ func (b *Bittrex) GetOrderHistory(market string) (orders []Order, err error) {
 func (b *Bittrex) GetWithdrawalHistory(currency string) (withdrawals []Withdrawal, err error) {
 	ressource := "account/getwithdrawalhistory"
 	if currency != "all" {
-		ressource += "currency=" + currency
+		ressource += "?currency=" + currency
 	}
 	r, err := b.client.do("GET", ressource, "", true)
 	if err != nil {
@@ -478,7 +478,7 @@ func (b *Bittrex) GetWithdrawalHistory(currency string) (withdrawals []Withdrawa
 func (b *Bittrex) GetDepositHistory(currency string) (deposits []Deposit, err error) {
 	ressource := "account/getdeposithistory"
 	if currency != "all" {
-		ressource += "currency=" + currency
+		ressource += "?currency=" + currency
 	}
 	r, err := b.client.do("GET", ressource, "", true)
 	if err != nil {
