@@ -50,6 +50,11 @@ type Bittrex struct {
 	client *client
 }
 
+// set enable/disable http request/response dump
+func (c *Bittrex) SetDebug(enable bool) {
+	c.client.debug = enable
+}
+
 // GetDistribution is used to get the distribution.
 func (b *Bittrex) GetDistribution(market string) (distribution Distribution, err error) {
 	r, err := b.client.do("GET", "https://bittrex.com/Api/v2.0/pub/currency/GetBalanceDistribution?currencyName="+strings.ToUpper(market), "", false)
