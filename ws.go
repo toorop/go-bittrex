@@ -117,6 +117,7 @@ func (b *Bittrex) SubscribeExchangeUpdate(market string, dataCh chan<- ExchangeS
 		return err
 	}
 	st.Initial = true
+	st.MarketName = market
 	sendStateAsync(dataCh, st)
 	select {
 	case <-stop:
