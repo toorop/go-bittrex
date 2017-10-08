@@ -1,4 +1,4 @@
-go-bittrex
+go-bittrex [![GoDoc](https://godoc.org/github.com/toorop/go-bittrex?status.svg)](https://godoc.org/github.com/toorop/go-bittrex)
 ==========
 
 go-bittrex is an implementation of the Bittrex API (public and private) in Golang.
