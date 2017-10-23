@@ -163,18 +163,11 @@ func (b *Bittrex) GetMarketSummary(market string) (marketSummary []MarketSummary
 // GetOrderBook is used to get retrieve the orderbook for a given market
 // market: a string literal for the market (ex: BTC-LTC)
 // cat: buy, sell or both to identify the type of orderbook to return.
-// depth: how deep of an order book to retrieve. Max is 100
-func (b *Bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBook, err error) {
+func (b *Bittrex) GetOrderBook(market, cat string) (orderBook OrderBook, err error) {
 	if cat != "buy" && cat != "sell" && cat != "both" {
 		cat = "both"
 	}
-	if depth > 100 {
-		depth = 100
-	}
-	if depth < 1 {
-		depth = 1
-	}
-	r, err := b.client.do("GET", fmt.Sprintf("public/getorderbook?market=%s&type=%s&depth=%d", strings.ToUpper(market), cat, depth), "", false)
+	r, err := b.client.do("GET", fmt.Sprintf("public/getorderbook?market=%s&type=%s", strings.ToUpper(market), cat), "", false)
 	if err != nil {
 		return
 	}
@@ -200,18 +193,12 @@ func (b *Bittrex) GetOrderBook(market, cat string, depth int) (orderBook OrderBo
 // GetOrderBookBuySell is used to get retrieve the buy or sell side of an orderbook for a given market
 // market: a string literal for the market (ex: BTC-LTC)
 // cat: buy or sell to identify the type of orderbook to return.
-// depth: how deep of an order book to retrieve. Max is 100
-func (b *Bittrex) GetOrderBookBuySell(market, cat string, depth int) (orderb []Orderb, err error) {
+func (b *Bittrex) GetOrderBookBuySell(market, cat string) (orderb []Orderb, err error) {
 	if cat != "buy" && cat != "sell" {
 		cat = "buy"
 	}
-	if depth > 100 {
-		depth = 100
-	}
-	if depth < 1 {
-		depth = 1
-	}
-	r, err := b.client.do("GET", fmt.Sprintf("public/getorderbook?market=%s&type=%s&depth=%d", strings.ToUpper(market), cat, depth), "", false)
+
+	r, err := b.client.do("GET", fmt.Sprintf("public/getorderbook?market=%s&type=%s", strings.ToUpper(market), cat), "", false)
 	if err != nil {
 		return
 	}
@@ -265,47 +252,9 @@ func (b *Bittrex) BuyLimit(market string, quantity, rate float64) (uuid string, 
 	return
 }
 
-// BuyMarket is used to place a market buy order in a spacific market.
-func (b *Bittrex) BuyMarket(market string, quantity float64) (uuid string, err error) {
-	r, err := b.client.do("GET", "market/buymarket?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64), "", true)
-	if err != nil {
-		return
-	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	var u Uuid
-	err = json.Unmarshal(response.Result, &u)
-	uuid = u.Id
-	return
-}
-
 // SellLimit is used to place a limited sell order in a specific market.
 func (b *Bittrex) SellLimit(market string, quantity, rate float64) (uuid string, err error) {
 	r, err := b.client.do("GET", "market/selllimit?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64)+"&rate="+strconv.FormatFloat(rate, 'f', 8, 64), "", true)
-	if err != nil {
-		return
-	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	var u Uuid
-	err = json.Unmarshal(response.Result, &u)
-	uuid = u.Id
-	return
-}
-
-// SellMarket is used to place a market sell order in a specific market.
-func (b *Bittrex) SellMarket(market string, quantity float64) (uuid string, err error) {
-	r, err := b.client.do("GET", "market/sellmarket?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64), "", true)
 	if err != nil {
 		return
 	}
