@@ -14,12 +14,6 @@ func main() {
 	// Bittrex client
 	bittrex := bittrex.New(API_KEY, API_SECRET)
 
-	// Get Candle ( OHLCV )
-	/*
-		markets, err := bittrex.GetHisCandles("BTC-LTC", "hour")
-		fmt.Println(markets, err)
-	*/
-
 	// Get markets
 	/*
 		markets, err := bittrex.GetMarkets()
@@ -54,19 +48,19 @@ func main() {
 
 	// Get orders book
 	/*
-		orderBook, err := bittrex.GetOrderBook("BTC-DRK", "both", 100)
+		orderBook, err := bittrex.GetOrderBook("BTC-DRK", "both")
 		fmt.Println(err, orderBook)
 	*/
 
 	// Get order book buy or sell side only
 	/*
-		orderb, err := bittrex.GetOrderBookBuySell("BTC-JBS", "buy", 100)
+		orderb, err := bittrex.GetOrderBookBuySell("BTC-JBS", "buy")
 		fmt.Println(err, orderb)
 	*/
 
 	// Market history
 	/*
-		marketHistory, err := bittrex.GetMarketHistory("BTC-DRK", 100)
+		marketHistory, err := bittrex.GetMarketHistory("BTC-DRK")
 		for _, trade := range marketHistory {
 			fmt.Println(err, trade.Timestamp.String(), trade.Quantity, trade.Price)
 		}
@@ -77,12 +71,6 @@ func main() {
 	// BuyLimit
 	/*
 		uuid, err := bittrex.BuyLimit("BTC-DOGE", 1000, 0.00000102)
-		fmt.Println(err, uuid)
-	*/
-
-	// BuyMarket
-	/*
-		uuid, err := bittrex.BuyLimit("BTC-DOGE", 1000)
 		fmt.Println(err, uuid)
 	*/
 
@@ -131,19 +119,19 @@ func main() {
 
 	// Get order history
 	/*
-		orderHistory, err := bittrex.GetOrderHistory("BTC-DOGE", 10)
+		orderHistory, err := bittrex.GetOrderHistory("BTC-DOGE")
 		fmt.Println(err, orderHistory)
 	*/
 
 	// Get getwithdrawal history
 	/*
-		withdrawalHistory, err := bittrex.GetWithdrawalHistory("all", 0)
+		withdrawalHistory, err := bittrex.GetWithdrawalHistory("all")
 		fmt.Println(err, withdrawalHistory)
 	*/
 
 	// Get deposit history
 	/*
-		deposits, err := bittrex.GetDepositHistory("all", 0)
+		deposits, err := bittrex.GetDepositHistory("all")
 		fmt.Println(err, deposits)
 	*/
 
