@@ -1,13 +1,15 @@
 package bittrex
 
+import "github.com/shopspring/decimal"
+
 type Candle struct {
-	TimeStamp  CandleTime `json:"T"`
-	Open       float64    `json:"O"`
-	Close      float64    `json:"C"`
-	High       float64    `json:"H"`
-	Low        float64    `json:"L"`
-	Volume     float64    `json:"V"`
-	BaseVolume float64    `json:"BV"`
+	TimeStamp  CandleTime      `json:"T"`
+	Open       decimal.Decimal `json:"O"`
+	Close      decimal.Decimal `json:"C"`
+	High       decimal.Decimal `json:"H"`
+	Low        decimal.Decimal `json:"L"`
+	Volume     decimal.Decimal `json:"V"`
+	BaseVolume decimal.Decimal `json:"BV"`
 }
 
 type NewCandles struct {
