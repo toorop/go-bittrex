@@ -1,7 +1,9 @@
 package bittrex
 
+import "github.com/shopspring/decimal"
+
 type Ticker struct {
-	Bid  float64 `json:"Bid"`
-	Ask  float64 `json:"Ask"`
-	Last float64 `json:"Last"`
+	Bid  decimal.Decimal `json:"Bid"`
+	Ask  decimal.Decimal `json:"Ask"`
+	Last decimal.Decimal `json:"Last"`
 }
