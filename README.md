@@ -58,7 +58,7 @@ func main() {
 	}
 
 	// Bittrex client
-	bc := bittrex.NewWithCustomHttpClient(conf.Bittrex.ApiKey, conf.Bittrex.ApiSecret, httpClient)
+	bittrex := bittrex.NewWithCustomHttpClient(API_KEY, API_SECRET, httpClient)
 
 	// Get markets
 	markets, err := bittrex.GetMarkets()
