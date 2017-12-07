@@ -502,3 +502,36 @@ func (b *Bittrex) GetTicks(market string, interval string) ([]Candle, error) {
 
 	return candles, nil
 }
+
+// GetLatestTick returns array with a single element latest candle object
+func (b *Bittrex) GetLatestTick(market string, interval string) ([]Candle, error) {
+	_, ok := CANDLE_INTERVALS[interval]
+	if !ok {
+		return nil, errors.New("wrong interval")
+	}
+
+	endpoint := fmt.Sprintf(
+		"https://bittrex.com/Api/v2.0/pub/market/GetLatestTick?tickInterval=%s&marketName=%s&_=%d",
+		interval, strings.ToUpper(market), rand.Int(),
+	)
+	r, err := b.client.do("GET", endpoint, "", false)
+	if err != nil {
+		return nil, fmt.Errorf("could not get market ticks: %v", err)
+	}
+
+	var response jsonResponse
+	if err := json.Unmarshal(r, &response); err != nil {
+		return nil, err
+	}
+
+	if err := handleErr(response); err != nil {
+		return nil, err
+	}
+	var candles []Candle
+
+	if err := json.Unmarshal(response.Result, &candles); err != nil {
+		return nil, fmt.Errorf("could not unmarshal candles: %v", err)
+	}
+
+	return candles, nil
+}
