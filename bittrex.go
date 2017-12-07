@@ -471,6 +471,7 @@ func (b *Bittrex) GetOrder(order_uuid string) (order Order2, err error) {
 }
 
 // GetTicks is used to get ticks history values for a market.
+// Interval can be -> ["oneMin", "fiveMin", "thirtyMin", "hour", "day"]
 func (b *Bittrex) GetTicks(market string, interval string) ([]Candle, error) {
 	_, ok := CANDLE_INTERVALS[interval]
 	if !ok {
