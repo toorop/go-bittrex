@@ -95,14 +95,14 @@ func (c *client) doTimeoutRequest(timer *time.Timer, req *http.Request) (*http.R
 }
 
 // do prepare and process HTTP request to Bittrex API
-func (c *client) do(method string, ressource string, payload string, authNeeded bool) (response []byte, err error) {
+func (c *client) do(method string, resource string, payload string, authNeeded bool) (response []byte, err error) {
 	connectTimer := time.NewTimer(c.httpTimeout)
 
 	var rawurl string
-	if strings.HasPrefix(ressource, "http") {
-		rawurl = ressource
+	if strings.HasPrefix(resource, "http") {
+		rawurl = resource
 	} else {
-		rawurl = fmt.Sprintf("%s%s/%s", API_BASE, API_VERSION, ressource)
+		rawurl = fmt.Sprintf("%s%s/%s", API_BASE, API_VERSION, resource)
 	}
 
 	req, err := http.NewRequest(method, rawurl, strings.NewReader(payload))

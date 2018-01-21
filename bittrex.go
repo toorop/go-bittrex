@@ -289,11 +289,11 @@ func (b *Bittrex) CancelOrder(orderID string) (err error) {
 // If market is set to "all", GetOpenOrders return all orders
 // If market is set to a specific order, GetOpenOrders return orders for this market
 func (b *Bittrex) GetOpenOrders(market string) (openOrders []Order, err error) {
-	ressource := "market/getopenorders"
+	resource := "market/getopenorders"
 	if market != "all" {
-		ressource += "?market=" + strings.ToUpper(market)
+		resource += "?market=" + strings.ToUpper(market)
 	}
-	r, err := b.client.do("GET", ressource, "", true)
+	r, err := b.client.do("GET", resource, "", true)
 	if err != nil {
 		return
 	}
@@ -388,11 +388,11 @@ func (b *Bittrex) Withdraw(address, currency string, quantity float64) (withdraw
 // GetOrderHistory used to retrieve your order history.
 // market string literal for the market (ie. BTC-LTC). If set to "all", will return for all market
 func (b *Bittrex) GetOrderHistory(market string) (orders []Order, err error) {
-	ressource := "account/getorderhistory"
+	resource := "account/getorderhistory"
 	if market != "all" {
-		ressource += "?market=" + market
+		resource += "?market=" + market
 	}
-	r, err := b.client.do("GET", ressource, "", true)
+	r, err := b.client.do("GET", resource, "", true)
 	if err != nil {
 		return
 	}
@@ -410,11 +410,11 @@ func (b *Bittrex) GetOrderHistory(market string) (orders []Order, err error) {
 // GetWithdrawalHistory is used to retrieve your withdrawal history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 func (b *Bittrex) GetWithdrawalHistory(currency string) (withdrawals []Withdrawal, err error) {
-	ressource := "account/getwithdrawalhistory"
+	resource := "account/getwithdrawalhistory"
 	if currency != "all" {
-		ressource += "?currency=" + currency
+		resource += "?currency=" + currency
 	}
-	r, err := b.client.do("GET", ressource, "", true)
+	r, err := b.client.do("GET", resource, "", true)
 	if err != nil {
 		return
 	}
@@ -432,11 +432,11 @@ func (b *Bittrex) GetWithdrawalHistory(currency string) (withdrawals []Withdrawa
 // GetDepositHistory is used to retrieve your deposit history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 func (b *Bittrex) GetDepositHistory(currency string) (deposits []Deposit, err error) {
-	ressource := "account/getdeposithistory"
+	resource := "account/getdeposithistory"
 	if currency != "all" {
-		ressource += "?currency=" + currency
+		resource += "?currency=" + currency
 	}
-	r, err := b.client.do("GET", ressource, "", true)
+	r, err := b.client.do("GET", resource, "", true)
 	if err != nil {
 		return
 	}
@@ -453,9 +453,9 @@ func (b *Bittrex) GetDepositHistory(currency string) (deposits []Deposit, err er
 
 func (b *Bittrex) GetOrder(order_uuid string) (order Order2, err error) {
 
-	ressource := "account/getorder?uuid=" + order_uuid
+	resource := "account/getorder?uuid=" + order_uuid
 
-	r, err := b.client.do("GET", ressource, "", true)
+	r, err := b.client.do("GET", resource, "", true)
 	if err != nil {
 		return
 	}
