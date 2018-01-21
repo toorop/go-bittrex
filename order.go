@@ -39,5 +39,5 @@ type Order2 struct {
 	ImmediateOrCancel          bool
 	IsConditional              bool
 	Condition                  string
-	ConditionTarget            string
+	ConditionTarget            decimal.Decimal
 }
