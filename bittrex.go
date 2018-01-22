@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/shopspring/decimal"
 	"math/rand"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -234,8 +234,8 @@ func (b *Bittrex) GetMarketHistory(market string) (trades []Trade, err error) {
 // Market
 
 // BuyLimit is used to place a limited buy order in a specific market.
-func (b *Bittrex) BuyLimit(market string, quantity, rate float64) (uuid string, err error) {
-	r, err := b.client.do("GET", "market/buylimit?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64)+"&rate="+strconv.FormatFloat(rate, 'f', 8, 64), "", true)
+func (b *Bittrex) BuyLimit(market string, quantity, rate decimal.Decimal) (uuid string, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("market/buylimit?market=%s&quantity=%s&rate=%s", market, quantity, rate), "", true)
 	if err != nil {
 		return
 	}
@@ -253,8 +253,8 @@ func (b *Bittrex) BuyLimit(market string, quantity, rate float64) (uuid string, 
 }
 
 // SellLimit is used to place a limited sell order in a specific market.
-func (b *Bittrex) SellLimit(market string, quantity, rate float64) (uuid string, err error) {
-	r, err := b.client.do("GET", "market/selllimit?market="+market+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64)+"&rate="+strconv.FormatFloat(rate, 'f', 8, 64), "", true)
+func (b *Bittrex) SellLimit(market string, quantity, rate decimal.Decimal) (uuid string, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("market/selllimit?market=%s&quantity=%s&rate=%s", market, quantity, rate), "", true)
 	if err != nil {
 		return
 	}
@@ -366,9 +366,9 @@ func (b *Bittrex) GetDepositAddress(currency string) (address Address, err error
 // Withdraw is used to withdraw funds from your account.
 // address string the address where to send the funds.
 // currency string literal for the currency (ie. BTC)
-// quantity float the quantity of coins to withdraw
-func (b *Bittrex) Withdraw(address, currency string, quantity float64) (withdrawUuid string, err error) {
-	r, err := b.client.do("GET", "account/withdraw?currency="+strings.ToUpper(currency)+"&quantity="+strconv.FormatFloat(quantity, 'f', 8, 64)+"&address="+address, "", true)
+// quantity decimal.Decimal the quantity of coins to withdraw
+func (b *Bittrex) Withdraw(address, currency string, quantity decimal.Decimal) (withdrawUuid string, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("account/withdraw?currency=%s&quantity=%s&address=%s", strings.ToUpper(currency), quantity, address), "", true)
 	if err != nil {
 		return
 	}
