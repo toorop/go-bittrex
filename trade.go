@@ -1,12 +1,14 @@
 package bittrex
 
+import "github.com/shopspring/decimal"
+
 // Used in getmarkethistory
 type Trade struct {
-	OrderUuid string  `json:"OrderUuid"`
-	Timestamp jTime   `json:"TimeStamp"`
-	Quantity  float64 `json:"Quantity"`
-	Price     float64 `json:"Price"`
-	Total     float64 `json:"Total"`
-	FillType  string  `json:"FillType"`
-	OrderType string  `json:"OrderType"`
+	OrderUuid int64           `json:"Id"`
+	Timestamp jTime           `json:"TimeStamp"`
+	Quantity  decimal.Decimal `json:"Quantity"`
+	Price     decimal.Decimal `json:"Price"`
+	Total     decimal.Decimal `json:"Total"`
+	FillType  string          `json:"FillType"`
+	OrderType string          `json:"OrderType"`
 }

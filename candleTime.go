@@ -1,14 +1,16 @@
 package bittrex
 
 import (
-	"strconv"
+	"fmt"
 	"time"
 )
 
 var CANDLE_INTERVALS = map[string]bool{
-	"tenmin": true,
-	"hour":   true,
-	"day":    true,
+	"oneMin":    true,
+	"fiveMin":   true,
+	"thirtyMin": true,
+	"hour":      true,
+	"day":       true,
 }
 
 type CandleTime struct {
@@ -16,13 +18,14 @@ type CandleTime struct {
 }
 
 func (t *CandleTime) UnmarshalJSON(b []byte) error {
-	result, err := strconv.ParseInt(string(b)[8:18], 10, 64)
-
-	if err != nil {
-		return err
+	if len(b) < 2 {
+		return fmt.Errorf("could not parse time %s", string(b))
 	}
-
-	t.Time = time.Unix(result, 0)
-
+	// trim enclosing ""
+	result, err := time.Parse("2006-01-02T15:04:05", string(b[1:len(b)-1]))
+	if err != nil {
+		return fmt.Errorf("could not parse time: %v", err)
+	}
+	t.Time = result
 	return nil
 }
