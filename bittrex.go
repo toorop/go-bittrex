@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/shopspring/decimal"
 	"math/rand"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/shopspring/decimal"
 )
 
 const (
@@ -513,6 +514,34 @@ func (b *Bittrex) GetLatestTick(market string, interval string) ([]Candle, error
 
 	endpoint := fmt.Sprintf(
 		"https://bittrex.com/Api/v2.0/pub/market/GetLatestTick?tickInterval=%s&marketName=%s&_=%d",
+		interval, strings.ToUpper(market), rand.Int(),
+	)
+	r, err := b.client.do("GET", endpoint, "", false)
+	if err != nil {
+		return nil, fmt.Errorf("could not get market ticks: %v", err)
+	}
+
+	var response jsonResponse
+	if err := json.Unmarshal(r, &response); err != nil {
+		return nil, err
+	}
+
+	if err := handleErr(response); err != nil {
+		return nil, err
+	}
+	var candles []Candle
+
+	if err := json.Unmarshal(response.Result, &candles); err != nil {
+		return nil, fmt.Errorf("could not unmarshal candles: %v", err)
+	}
+
+	return candles, nil
+}
+
+// GetHistoricData is used to get the full previous candle data  for a given market (v2)
+func (b *Bittrex) GetHistoricData(market string, interval string) ([]Candle, error) {
+	endpoint := fmt.Sprintf(
+		"https://bittrex.com/Api/v2.0/pub/market/GetTicks?tickInterval=%s&marketName=%s&_=%d",
 		interval, strings.ToUpper(market), rand.Int(),
 	)
 	r, err := b.client.do("GET", endpoint, "", false)
