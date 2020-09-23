@@ -104,6 +104,7 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 	} else {
 		rawurl = fmt.Sprintf("%s%s/%s", API_BASE, API_VERSION, resource)
 	}
+	fmt.Println("url: ", rawurl)
 
 	req, err := http.NewRequest(method, rawurl, strings.NewReader(payload))
 	if err != nil {

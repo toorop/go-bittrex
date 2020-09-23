@@ -16,3 +16,16 @@ type Market struct {
 	LogoUrl            string  `json:"LogoUrl"`
 	Created            string  `json:"Created"`
 }
+
+
+type MarketV3 struct {
+	Symbol              string   `json:"symbol"`
+	BaseCurrencySymbol  string   `json:"baseCurrencySymbol"`
+	QuoteCurrencySymbol string   `json:"quoteCurrencySymbol"`
+	MinTradeSize        string   `json:"minTradeSize"`
+	Precision           int32   `json:"precision"`
+	Status              string   `json:"status"`
+	CreatedAt           string   `json:"createdAt"`
+	Notice              string   `json:"notice"`
+	ProhibitedIn        []string `json:"prohibitedIn"`
+}

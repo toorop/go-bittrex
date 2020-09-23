@@ -12,3 +12,18 @@ type Currency struct {
 	BaseAddress     string          `json:"BaseAddress"`
 	Notice          string          `json:"Notice"`
 }
+
+
+type CurrencyV3 struct {
+	Symbol                   string        `json:"symbol"`
+	Name                     string        `json:"name"`
+	CoinType                 string        `json:"coinType"`
+	Status                   string        `json:"status"`
+	MinConfirmations         int           `json:"minConfirmations"`
+	Notice                   string        `json:"notice"`
+	TxFee                    string        `json:"txFee"`
+	LogoURL                  string        `json:"logoUrl,omitempty"`
+	ProhibitedIn             []interface{} `json:"prohibitedIn"`
+	BaseAddress              string        `json:"baseAddress,omitempty"`
+	AssociatedTermsOfService []interface{} `json:"associatedTermsOfService"`
+}
