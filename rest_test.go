@@ -1,7 +1,7 @@
 package bittrex
 
 import (
-	"fmt"
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -58,5 +58,20 @@ func TestPublicAPI(t *testing.T)  {
 	resTrades, err :=  bittrex.GetMarketHistory("CRW-BTC")
 	assert.Nil(t, err)
 	assert.NotNil(t, resTrades)
-	fmt.Println(resTrades)
+
+
+	// This should throw ERR_ORDER_MISSING_PARAMETERS
+	resCreateOrder, err := bittrex.CreateOrder(CreateOrderParams{
+		MarketSymbol:  "CRW-BTC",
+		Direction:     BUY,
+		Type:          "",
+		Quantity:      decimal.Decimal{},
+		Ceiling:       decimal.Decimal{},
+		Limit:         decimal.Decimal{},
+		TimeInForce:   "",
+		ClientOrderID: "",
+		UseAwards:     "",
+	})
+	assert.Equal(t, ERR_ORDER_MISSING_PARAMETERS, err)
+	assert.Equal(t, OrderV3{}, resCreateOrder)
 }

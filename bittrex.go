@@ -241,6 +241,50 @@ func (b *Bittrex) BuyLimit(market string, quantity, rate decimal.Decimal) (uuid 
 	return
 }
 
+// CreateOrder is used to create any type of supported order.
+func (b *Bittrex) CreateOrder(params CreateOrderParams) (order OrderV3, err error) {
+	// TODO Preprocessor
+	if params.Type == "" || params.MarketSymbol == "" || params.Direction == "" || params.TimeInForce == ""{
+		// Check for missing parameters
+		return OrderV3{}, ERR_ORDER_MISSING_PARAMETERS
+	}
+	var finalParams = CreateOrderParams{
+		MarketSymbol:  params.MarketSymbol,
+		Direction:     params.Direction,
+		Type:          params.Type,
+		Quantity:      decimal.Decimal{},
+		Ceiling:       decimal.Decimal{},
+		Limit:         decimal.Decimal{},
+		TimeInForce:   params.TimeInForce,
+		ClientOrderID: params.ClientOrderID,
+		UseAwards:     params.UseAwards,
+	}
+
+	switch params.Type {
+	case MARKET:
+		finalParams.Quantity = params.Quantity
+	case LIMIT:
+		finalParams.Limit = params.Limit
+		finalParams.Quantity = params.Quantity
+	case CEILING_LIMIT:
+		finalParams.Ceiling = params.Ceiling
+	case CEILING_MARKET:
+		finalParams.Ceiling = params.Ceiling
+
+	}
+
+	payload, err := json.Marshal(finalParams)
+	if err != nil {
+		return
+	}
+	r, err := b.client.do("POST", fmt.Sprintf("orders"), string(payload), true)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(r, &order)
+	return
+}
+
 // SellLimit is used to place a limited sell order in a specific market.
 func (b *Bittrex) SellLimit(market string, quantity, rate decimal.Decimal) (uuid string, err error) {
 	r, err := b.client.do("GET", fmt.Sprintf("market/selllimit?market=%s&quantity=%s&rate=%s", market, quantity, rate), "", true)
