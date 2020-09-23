@@ -187,41 +187,36 @@ func (b *Bittrex) GetOrderBook(market string, depth int32, cat string) (orderBoo
 // GetOrderBookBuySell is used to get retrieve the buy or sell side of an orderbook for a given market
 // market: a string literal for the market (ex: BTC-LTC)
 // cat: buy or sell to identify the type of orderbook to return.
-func (b *Bittrex) GetOrderBookBuySell(market, cat string) (orderb []Orderb, err error) {
+func (b *Bittrex) GetOrderBookBuySell(market string, depth int32, cat string) (orderb []OrderbV3, err error) {
 	if cat != "buy" && cat != "sell" {
 		cat = "buy"
 	}
 
-	r, err := b.client.do("GET", fmt.Sprintf("public/getorderbook?market=%s&type=%s", strings.ToUpper(market), cat), "", false)
+	r, err := b.client.do("GET", fmt.Sprintf("markets/%s/orderbook?depth=%s", strings.ToUpper(market), strconv.Itoa(int(depth))), "", false)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
+	var orderBook OrderBookV3
+	err = json.Unmarshal(r, &orderBook)
+	if err != nil {
 		return
 	}
-	if err = handleErr(response); err != nil {
-		return
+	if cat == "buy" {
+		orderb = orderBook.Ask
+	} else if cat == "sell" {
+		orderb = orderBook.Bid
 	}
-	err = json.Unmarshal(response.Result, &orderb)
 	return
 }
 
 // GetMarketHistory is used to retrieve the latest trades that have occured for a specific market.
 // market a string literal for the market (ex: BTC-LTC)
-func (b *Bittrex) GetMarketHistory(market string) (trades []Trade, err error) {
-	r, err := b.client.do("GET", fmt.Sprintf("public/getmarkethistory?market=%s", strings.ToUpper(market)), "", false)
+func (b *Bittrex) GetMarketHistory(market string) (trades []TradeV3, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("markets/%s/trades", strings.ToUpper(market)), "", false)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &trades)
+	err = json.Unmarshal(r, &trades)
 	return
 }
 

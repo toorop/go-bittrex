@@ -1,6 +1,7 @@
 package bittrex
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -49,4 +50,13 @@ func TestPublicAPI(t *testing.T)  {
 	assert.Nil(t, err)
 	assert.NotNil(t, resOrderBook4.Bid)
 	assert.NotNil(t, resOrderBook4.Ask)
+
+	resOrderBookSide, err :=  bittrex.GetOrderBookBuySell("CRW-BTC", 500, "buy")
+	assert.Nil(t, err)
+	assert.NotNil(t, resOrderBookSide)
+
+	resTrades, err :=  bittrex.GetMarketHistory("CRW-BTC")
+	assert.Nil(t, err)
+	assert.NotNil(t, resTrades)
+	fmt.Println(resTrades)
 }

@@ -10,7 +10,7 @@ type Ticker struct {
 
 type TickerV3 struct {
 	Symbol        string `json:"symbol"`
-	LastTradeRate string `json:"lastTradeRate"`
-	BidRate       string `json:"bidRate"`
-	AskRate       string `json:"askRate"`
+	LastTradeRate decimal.Decimal `json:"lastTradeRate"`
+	BidRate       decimal.Decimal `json:"bidRate"`
+	AskRate       decimal.Decimal `json:"askRate"`
 }
