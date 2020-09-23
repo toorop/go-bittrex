@@ -8,6 +8,7 @@ import (
 	"github.com/shopspring/decimal"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -156,30 +157,30 @@ func (b *Bittrex) GetMarketSummary(market string) (marketSummary MarketSummaryV3
 // GetOrderBook is used to get retrieve the orderbook for a given market
 // market: a string literal for the market (ex: BTC-LTC)
 // cat: buy, sell or both to identify the type of orderbook to return.
-func (b *Bittrex) GetOrderBook(market, cat string) (orderBook OrderBook, err error) {
+func (b *Bittrex) GetOrderBook(market string, depth int32, cat string) (orderBook OrderBookV3, err error) {
 	if cat != "buy" && cat != "sell" && cat != "both" {
 		cat = "both"
 	}
-	r, err := b.client.do("GET", fmt.Sprintf("public/getorderbook?market=%s&type=%s", strings.ToUpper(market), cat), "", false)
+
+	r, err := b.client.do("GET", fmt.Sprintf("markets/%s/orderbook?depth=%s", strings.ToUpper(market), strconv.Itoa(int(depth))), "", false)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
+
+	var auxOrderBook OrderBookV3
+	// TODO Verify Ask and Bid logic is OK
+	err = json.Unmarshal(r, &orderBook)
+
+	if cat == "both" {
 		return
 	}
 
 	if cat == "buy" {
-		err = json.Unmarshal(response.Result, &orderBook.Buy)
+		auxOrderBook.Ask = orderBook.Ask
 	} else if cat == "sell" {
-		err = json.Unmarshal(response.Result, &orderBook.Sell)
-	} else {
-		err = json.Unmarshal(response.Result, &orderBook)
+		auxOrderBook.Bid = orderBook.Bid
 	}
-
+	orderBook = auxOrderBook
 	return
 }
 
