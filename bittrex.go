@@ -85,6 +85,16 @@ func (b *Bittrex) GetCurrencies() (currencies []CurrencyV3, err error) {
 	return
 }
 
+// GetCurrency is used to get information of a single currency at Bittrex along with other meta data.
+func (b *Bittrex) GetCurrency(symbol string) (currencies CurrencyV3, err error) {
+	r, err := b.client.do("GET", "currencies/" + symbol, "", false)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(r, &currencies)
+	return
+}
+
 // GetMarkets is used to get the open and available trading markets at Bittrex along with other meta data.
 func (b *Bittrex) GetMarkets() (markets []MarketV3, err error) {
 	r, err := b.client.do("GET", "markets", "", false)
@@ -95,54 +105,51 @@ func (b *Bittrex) GetMarkets() (markets []MarketV3, err error) {
 	return
 }
 
-// GetTicker is used to get the current ticker values for a market.
-func (b *Bittrex) GetTicker(market string) (ticker Ticker, err error) {
-	r, err := b.client.do("GET", "public/getticker?market="+strings.ToUpper(market), "", false)
+// GetTicker is used to get the current ticker values for a market, if none is specified, returns info for all.
+func (b *Bittrex) GetTicker(market string) (ticker []TickerV3, err error) {
+	market = strings.ToUpper(market)
+	var endpoint string
+	if market == "" {
+		endpoint = "markets/tickers"
+	} else {
+		endpoint = "markets/" + market + "/ticker"
+	}
+
+	r, err := b.client.do("GET", endpoint, "", false)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
+	if market == "" {
+		err = json.Unmarshal(r, &ticker)
+	} else {
+		var t TickerV3
+		err = json.Unmarshal(r, &t)
+		if err != nil {
+			return
+		}
+		ticker = append(ticker, t)
 	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &ticker)
+
 	return
 }
 
 // GetMarketSummaries is used to get the last 24 hour summary of all active exchanges
-func (b *Bittrex) GetMarketSummaries() (marketSummaries []MarketSummary, err error) {
-	r, err := b.client.do("GET", "public/getmarketsummaries", "", false)
+func (b *Bittrex) GetMarketSummaries() (marketSummaries []MarketSummaryV3, err error) {
+	r, err := b.client.do("GET", "markets/summaries", "", false)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &marketSummaries)
+	err = json.Unmarshal(r, &marketSummaries)
 	return
 }
 
 // GetMarketSummary is used to get the last 24 hour summary for a given market
-func (b *Bittrex) GetMarketSummary(market string) (marketSummary []MarketSummary, err error) {
-	r, err := b.client.do("GET", fmt.Sprintf("public/getmarketsummary?market=%s", strings.ToUpper(market)), "", false)
+func (b *Bittrex) GetMarketSummary(market string) (marketSummary MarketSummaryV3, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("markets/%s/summary", strings.ToUpper(market)), "", false)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &marketSummary)
+	err = json.Unmarshal(r, &marketSummary)
 	return
 }
 

@@ -16,3 +16,13 @@ type MarketSummary struct {
 	PrevDay        decimal.Decimal `json:"PrevDay"`
 	TimeStamp      string          `json:"TimeStamp"`
 }
+
+type MarketSummaryV3 struct {
+	Symbol        string `json:"symbol"`
+	High          string `json:"high"`
+	Low           string `json:"low"`
+	Volume        string `json:"volume"`
+	QuoteVolume   string `json:"quoteVolume"`
+	PercentChange string `json:"percentChange"`
+	UpdatedAt     string `json:"updatedAt"`
+}
