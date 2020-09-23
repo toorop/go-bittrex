@@ -1,13 +1,21 @@
 package bittrex
 
 import (
+	"fmt"
+	"github.com/joho/godotenv"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
+
+func init() {
+	_ = godotenv.Load()
+}
+
 func TestPublicAPI(t *testing.T)  {
-	bittrex := New("", "")
+	bittrex := New(os.Getenv("API_PUBLIC"), os.Getenv("API_SECRET"))
 	_, err := bittrex.GetCurrencies()
 	assert.Nil(t, err)
 
@@ -74,4 +82,8 @@ func TestPublicAPI(t *testing.T)  {
 	})
 	assert.Equal(t, ERR_ORDER_MISSING_PARAMETERS, err)
 	assert.Equal(t, OrderV3{}, resCreateOrder)
+
+	resBalances, err := bittrex.GetBalances()
+	assert.Nil(t, err)
+	fmt.Println(resBalances)
 }

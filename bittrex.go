@@ -285,78 +285,44 @@ func (b *Bittrex) CreateOrder(params CreateOrderParams) (order OrderV3, err erro
 	return
 }
 
-// SellLimit is used to place a limited sell order in a specific market.
-func (b *Bittrex) SellLimit(market string, quantity, rate decimal.Decimal) (uuid string, err error) {
-	r, err := b.client.do("GET", fmt.Sprintf("market/selllimit?market=%s&quantity=%s&rate=%s", market, quantity, rate), "", true)
-	if err != nil {
-		return
-	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	var u Uuid
-	err = json.Unmarshal(response.Result, &u)
-	uuid = u.Id
-	return
-}
-
 // CancelOrder is used to cancel a buy or sell order.
-func (b *Bittrex) CancelOrder(orderID string) (err error) {
-	r, err := b.client.do("GET", "market/cancel?uuid="+orderID, "", true)
+func (b *Bittrex) CancelOrder(orderID string) (order OrderV3, err error) {
+	r, err := b.client.do("DELETE", "orders/" + orderID, "", true)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	err = handleErr(response)
+	err = json.Unmarshal(r, &order)
 	return
 }
 
 // GetOpenOrders returns orders that you currently have opened.
 // If market is set to "all", GetOpenOrders return all orders
 // If market is set to a specific order, GetOpenOrders return orders for this market
-func (b *Bittrex) GetOpenOrders(market string) (openOrders []Order, err error) {
-	resource := "market/getopenorders"
+func (b *Bittrex) GetOpenOrders(market string) (openOrders []OrderV3, err error) {
+	resource := "orders/open"
+	if market == "" {
+		market = "all"
+	}
 	if market != "all" {
-		resource += "?market=" + strings.ToUpper(market)
+		resource += "?marketSymbol=" + strings.ToUpper(market)
 	}
 	r, err := b.client.do("GET", resource, "", true)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &openOrders)
+	err = json.Unmarshal(r, &openOrders)
 	return
 }
 
 // Account
 
 // GetBalances is used to retrieve all balances from your account
-func (b *Bittrex) GetBalances() (balances []Balance, err error) {
-	r, err := b.client.do("GET", "account/getbalances", "", true)
+func (b *Bittrex) GetBalances() (balances []BalanceV3, err error) {
+	r, err := b.client.do("GET", "balances", "", true)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &balances)
+	err = json.Unmarshal(r, &balances)
 	return
 }
 
