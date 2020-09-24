@@ -86,4 +86,17 @@ func TestPublicAPI(t *testing.T)  {
 	resBalances, err := bittrex.GetBalances()
 	assert.Nil(t, err)
 	fmt.Println(resBalances)
+	for _, b := range resBalances {
+		fmt.Println(b.CurrencySymbol, " - ", b.Total)
+	}
+
+	resBalance, err := bittrex.GetBalance("BTC")
+	assert.Nil(t, err)
+	assert.NotNil(t, resBalance)
+
+	resAddress, err := bittrex.GetDepositAddress("BTC")
+	assert.Nil(t, err)
+	assert.NotNil(t, resAddress)
+	fmt.Println(resAddress)
+	// assert.Equal(t, "3", resAddress.CryptoAddress[0])
 }

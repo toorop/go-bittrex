@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/shopspring/decimal"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -329,36 +330,41 @@ func (b *Bittrex) GetBalances() (balances []BalanceV3, err error) {
 // Getbalance is used to retrieve the balance from your account for a specific currency.
 // currency: a string literal for the currency (ex: LTC)
 func (b *Bittrex) GetBalance(currency string) (balance Balance, err error) {
-	r, err := b.client.do("GET", "account/getbalance?currency="+strings.ToUpper(currency), "", true)
+	r, err := b.client.do("GET", fmt.Sprintf("balances/%s", strings.ToUpper(currency)), "", true)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &balance)
+	err = json.Unmarshal(r, &balance)
 	return
 }
 
 // GetDepositAddress is sed to generate or retrieve an address for a specific currency.
 // currency a string literal for the currency (ie. BTC)
-func (b *Bittrex) GetDepositAddress(currency string) (address Address, err error) {
-	r, err := b.client.do("GET", "account/getdepositaddress?currency="+strings.ToUpper(currency), "", true)
+func (b *Bittrex) GetDepositAddress(currency string) (address AddressV3, err error) {
+	var addressParams = AddressParams{CurrencySymbol: currency}
+	payload, err := json.Marshal(addressParams)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
+	r, err := b.client.do("GET", fmt.Sprintf("addresses/%s", currency), "", true)
+	/* r, err := b.client.do("POST", "addresses", string(payload), true)
+	if err != nil {
+		return
+	} */
+	err = json.Unmarshal(r, &address)
+	if err != nil {
 		return
 	}
-	if err = handleErr(response); err != nil {
-		return
+
+	if address.CryptoAddress == "" {
+		log.Println("needs to create new address")
+		_, _ = b.client.do("POST", "addresses", string(payload), true)
+		r, err = b.client.do("GET", fmt.Sprintf("addresses/%s", currency), "", true)
+		if err != nil {
+			return
+		}
+		err = json.Unmarshal(r, &address)
 	}
-	err = json.Unmarshal(response.Result, &address)
 	return
 }
 
