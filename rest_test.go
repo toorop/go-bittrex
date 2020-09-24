@@ -104,5 +104,9 @@ func TestPublicAPI(t *testing.T)  {
 	resWithdrawalHistory, err := bittrex.GetOpenWithdrawals("", ALL)
 	assert.Nil(t, err)
 	assert.NotNil(t, resWithdrawalHistory)
-	fmt.Println(resWithdrawalHistory)
+
+	resClosedWithdrawalHistory, err := bittrex.GetClosedWithdrawals("", ALL)
+	assert.Nil(t, err)
+	assert.NotNil(t, resClosedWithdrawalHistory)
+	fmt.Println(resClosedWithdrawalHistory)
 }

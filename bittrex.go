@@ -414,6 +414,28 @@ func (b *Bittrex) GetOpenWithdrawals(currency string, status WithdrawalStatus) (
 	return
 }
 
+// GetClosedWithdrawals is used to retrieve your closed withdrawal history
+// currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
+// TODO Add more parameters according to https://bittrex.github.io/api/v3#operation--withdrawals-closed-get
+func (b *Bittrex) GetClosedWithdrawals(currency string, status WithdrawalStatus) (withdrawals []WithdrawalV3, err error) {
+	var params = WithdrawalHistoryParams{
+		Status:         string(status),
+		CurrencySymbol: currency,
+	}
+	v, _ := query.Values(params)
+	queryParams := v.Encode()
+	resource := "withdrawals/closed"
+	if len(queryParams) != 0 {
+		resource += "?"
+	}
+	r, err := b.client.do("GET", resource + queryParams, "", true)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(r, &withdrawals)
+	return
+}
+
 // GetDepositHistory is used to retrieve your deposit history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 func (b *Bittrex) GetDepositHistory(currency string) (deposits []Deposit, err error) {
