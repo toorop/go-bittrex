@@ -25,3 +25,13 @@ const (
 	BUY OrderDirection = "BUY"
 	SELL OrderDirection = "SELL"
 )
+
+type WithdrawalStatus string
+
+const (
+	REQUESTED WithdrawalStatus = "REQUESTED"
+	AUTHORIZED WithdrawalStatus = "AUTHORIZED"
+	PENDING WithdrawalStatus = "PENDING"
+	ERROR_INVALID_ADDRESS WithdrawalStatus = "ERROR_INVALID_ADDRESS"
+	ALL WithdrawalStatus = ""
+)

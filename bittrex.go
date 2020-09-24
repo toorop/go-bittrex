@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/google/go-querystring/query"
 	"github.com/shopspring/decimal"
 	"log"
 	"math/rand"
@@ -372,65 +373,44 @@ func (b *Bittrex) GetDepositAddress(currency string) (address AddressV3, err err
 // address string the address where to send the funds.
 // currency string literal for the currency (ie. BTC)
 // quantity decimal.Decimal the quantity of coins to withdraw
-func (b *Bittrex) Withdraw(address, currency string, quantity decimal.Decimal) (withdrawUuid string, err error) {
-	r, err := b.client.do("GET", fmt.Sprintf("account/withdraw?currency=%s&quantity=%s&address=%s", strings.ToUpper(currency), quantity, address), "", true)
+// tag string an optional name for the withdrawal address
+func (b *Bittrex) Withdraw(address, currency string, quantity decimal.Decimal, tag string) (withdraw WithdrawalV3, err error) {
+	if address == "" || currency == "" || quantity.LessThan(decimal.NewFromFloat(0.0)) {
+		return withdraw, ERR_WITHDRAWAL_MISSING_PARAMETERS
+	}
+	var params = WithdrawalParams{
+		CurrencySymbol:   currency,
+		Quantity:         quantity.String(),
+		CryptoAddress:    address,
+		CryptoAddressTag: tag,
+	}
+	payload, err := json.Marshal(params)
+	r, err := b.client.do("POST", "withdrawals", string(payload), true)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	var u Uuid
-	err = json.Unmarshal(response.Result, &u)
-	withdrawUuid = u.Id
+	err = json.Unmarshal(r, &withdraw)
 	return
 }
 
-// GetOrderHistory used to retrieve your order history.
-// market string literal for the market (ie. BTC-LTC). If set to "all", will return for all market
-func (b *Bittrex) GetOrderHistory(market string) (orders []Order, err error) {
-	resource := "account/getorderhistory"
-	if market != "all" {
-		resource += "?market=" + market
-	}
-	r, err := b.client.do("GET", resource, "", true)
-	if err != nil {
-		return
-	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &orders)
-	return
-}
-
-// GetWithdrawalHistory is used to retrieve your withdrawal history
+// GetOpenWithdrawals is used to retrieve your open withdrawal history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
-func (b *Bittrex) GetWithdrawalHistory(currency string) (withdrawals []Withdrawal, err error) {
-	resource := "account/getwithdrawalhistory"
-	if currency != "all" {
-		resource += "?currency=" + currency
+func (b *Bittrex) GetOpenWithdrawals(currency string, status WithdrawalStatus) (withdrawals []WithdrawalV3, err error) {
+	var params = WithdrawalHistoryParams{
+		Status:         string(status),
+		CurrencySymbol: currency,
 	}
-	r, err := b.client.do("GET", resource, "", true)
+	v, _ := query.Values(params)
+	queryParams := v.Encode()
+	resource := "withdrawals/open"
+	if len(queryParams) != 0 {
+		resource += "?"
+	}
+	r, err := b.client.do("GET", resource + queryParams, "", true)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
-		return
-	}
-	if err = handleErr(response); err != nil {
-		return
-	}
-	err = json.Unmarshal(response.Result, &withdrawals)
+	err = json.Unmarshal(r, &withdrawals)
 	return
 }
 

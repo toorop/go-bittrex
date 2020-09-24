@@ -85,10 +85,10 @@ func TestPublicAPI(t *testing.T)  {
 
 	resBalances, err := bittrex.GetBalances()
 	assert.Nil(t, err)
-	fmt.Println(resBalances)
-	for _, b := range resBalances {
+	assert.NotNil(t, resBalances)
+	/* for _, b := range resBalances {
 		fmt.Println(b.CurrencySymbol, " - ", b.Total)
-	}
+	}*/
 
 	resBalance, err := bittrex.GetBalance("BTC")
 	assert.Nil(t, err)
@@ -99,4 +99,10 @@ func TestPublicAPI(t *testing.T)  {
 	assert.NotNil(t, resAddress)
 	fmt.Println(resAddress)
 	// assert.Equal(t, "3", resAddress.CryptoAddress[0])
+
+
+	resWithdrawalHistory, err := bittrex.GetOpenWithdrawals("", ALL)
+	assert.Nil(t, err)
+	assert.NotNil(t, resWithdrawalHistory)
+	fmt.Println(resWithdrawalHistory)
 }
