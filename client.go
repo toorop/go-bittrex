@@ -123,25 +123,25 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 			return
 		}
 
+		// Payload SHA512 to hex encoding
 		payloadSum := sha512.Sum512([]byte(payload))
 		payloadHash := hex.EncodeToString(payloadSum[:])
-		fmt.Println(payloadHash)
 
-		nonce := time.Now().UnixNano()
-		q := req.URL.Query()
-		q.Set("Api-Key", c.apiKey)
-		q.Set("Api-Timestamp", fmt.Sprintf("%d", nonce))
-		q.Set("Api-Content-Hash", payloadHash)
-		// var preSign = [timestamp, uri, method, contentHash, subaccountId].join('');
-		preSignatura := []string{strconv.Itoa(int(nonce)), req.URL.String(), method, payloadHash, ""}
-		fmt.Println(preSignatura)
+		// Unix timestamp in milliseconds
+		nonce := time.Now().Unix()*1000
 
-		// joining the string by separator
+		// All of the signature elemnts must be parsed as strings in this array.
+		preSignatura := []string{strconv.Itoa(int(nonce)), req.URL.String(), method, payloadHash}
 		signaturePayload := strings.Join(preSignatura, "")
-		req.URL.RawQuery = q.Encode()
+
 		mac := hmac.New(sha512.New, []byte(c.apiSecret))
 		_, err = mac.Write([]byte(signaturePayload))
 		sig := hex.EncodeToString(mac.Sum(nil))
+
+		// Add headers
+		req.Header.Add("Api-Key", c.apiKey)
+		req.Header.Add("Api-Timestamp", fmt.Sprintf("%d", nonce))
+		req.Header.Add("Api-Content-Hash", payloadHash)
 		req.Header.Add("Api-Signature", sig)
 	}
 
