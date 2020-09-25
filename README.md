@@ -78,6 +78,7 @@ See ["Examples" folder for more... examples](https://github.com/toorop/go-bittre
 Donate
 ------
 
+**toorop** Original Maintainer  
 ![Donation QR](http://api.qrserver.com/v1/create-qr-code/?size=200x200&data=bitcoin:1HgpsmxV52eAjDcoNpVGpYEhGfgN7mM1JB%3Flabel%3Dtoorop)
 
 [1HgpsmxV52eAjDcoNpVGpYEhGfgN7mM1JB](http://tinyurl.com/mccsoez)
