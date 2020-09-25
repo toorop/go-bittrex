@@ -436,6 +436,24 @@ func (b *Bittrex) GetClosedWithdrawals(currency string, status WithdrawalStatus)
 	return
 }
 
+// GetWithdrawalByTxId is used to retrieve information of a withdrawal by txid.
+// txid string a string literal for the on chain transaction id.
+func (b *Bittrex) GetWithdrawalByTxId(txid string) (withdrawal WithdrawalV3, err error) {
+	r, err := b.client.do("GET", fmt.Sprintf("withdrawals/ByTxId/%s", txid), "", true)
+	if err != nil {
+		return
+	}
+	var withdrawals []WithdrawalV3
+	err = json.Unmarshal(r, &withdrawals)
+	if err != nil {
+		return
+	}
+	if len(withdrawals) > 0 {
+		return withdrawals[0], nil
+	}
+	return
+}
+
 // GetDepositHistory is used to retrieve your deposit history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 func (b *Bittrex) GetDepositHistory(currency string) (deposits []Deposit, err error) {
