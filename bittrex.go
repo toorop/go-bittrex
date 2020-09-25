@@ -394,11 +394,11 @@ func (b *Bittrex) Withdraw(address, currency string, quantity decimal.Decimal, t
 }
 
 // GetOpenWithdrawals is used to retrieve your open withdrawal history
-// currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
+// currency string a string literal for the currency (ie. BTC). If set to "", will return for all currencies
 func (b *Bittrex) GetOpenWithdrawals(currency string, status WithdrawalStatus) (withdrawals []WithdrawalV3, err error) {
 	var params = WithdrawalHistoryParams{
 		Status:         string(status),
-		CurrencySymbol: currency,
+		CurrencySymbol: strings.ToUpper(currency),
 	}
 	v, _ := query.Values(params)
 	queryParams := v.Encode()
@@ -420,7 +420,7 @@ func (b *Bittrex) GetOpenWithdrawals(currency string, status WithdrawalStatus) (
 func (b *Bittrex) GetClosedWithdrawals(currency string, status WithdrawalStatus) (withdrawals []WithdrawalV3, err error) {
 	var params = WithdrawalHistoryParams{
 		Status:         string(status),
-		CurrencySymbol: currency,
+		CurrencySymbol: strings.ToUpper(currency),
 	}
 	v, _ := query.Values(params)
 	queryParams := v.Encode()
