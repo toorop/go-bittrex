@@ -456,20 +456,20 @@ func (b *Bittrex) GetWithdrawalByTxId(txid string) (withdrawal WithdrawalV3, err
 
 // GetDepositHistory is used to retrieve your deposit history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
-func (b *Bittrex) GetDepositHistory(txid string) (deposits []Deposit, err error) {
+func (b *Bittrex) GetDepositHistory(txid string) (deposits []DepositV3, err error) {
 	resource := fmt.Sprintf("deposits/ByTxId/%s", txid)
 	r, err := b.client.do("GET", resource, "", true)
 	if err != nil {
 		return
 	}
-	var response jsonResponse
-	if err = json.Unmarshal(r, &response); err != nil {
+	// var response json.RawMessage
+	if err = json.Unmarshal(r, &deposits); err != nil {
 		return
 	}
-	if err = handleErr(response); err != nil {
+	/*if err = handleErr(response); err != nil {
 		return
-	}
-	err = json.Unmarshal(response.Result, &deposits)
+	}*/
+	// err = json.Unmarshal(response, &deposits)
 	return
 }
 

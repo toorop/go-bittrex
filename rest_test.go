@@ -118,6 +118,7 @@ func TestPublicAPI(t *testing.T)  {
 
 /*func TestDeposits(t *testing.T)  {
 	bittrex := New(os.Getenv("API_PUBLIC"), os.Getenv("API_SECRET"))
-	_, err := bittrex.GetDepositHistory("9662cf066d792f32c19ab91c7b2959be7ed7ec6eac9f96bd6ffc00490a52d696")
+	info, err := bittrex.GetDepositHistory("9662cf066d792f32c19ab91c7b2959be7ed7ec6eac9f96bd6ffc00490a52d696")
 	assert.Nil(t, err)
+	fmt.Println(info)
 }*/

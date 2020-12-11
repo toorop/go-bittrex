@@ -11,3 +11,17 @@ type Deposit struct {
 	TxId          string          `json:"TxId"`
 	CryptoAddress string          `json:"CryptoAddress"`
 }
+
+type DepositV3 struct {
+	ID               string          `json:"id"`
+	CurrencySymbol   string          `json:"currencySymbol"`
+	Quantity         decimal.Decimal `json:"quantity"`
+	CryptoAddress    string          `json:"cryptoAddress"`
+	CryptoAddressTag string          `json:"cryptoAddressTag"`
+	TxID             string          `json:"txId"`
+	Confirmations    int32          `json:"confirmations"`
+	UpdatedAt        string          `json:"updatedAt"`
+	CompletedAt      string          `json:"completedAt"`
+	Status           string          `json:"status"`
+	Source           string          `json:"source"`
+}
