@@ -78,6 +78,13 @@ See ["Examples" folder for more... examples](https://github.com/toorop/go-bittre
 Donate
 ------
 
+**toorop** Original Maintainer  
 ![Donation QR](http://api.qrserver.com/v1/create-qr-code/?size=200x200&data=bitcoin:1HgpsmxV52eAjDcoNpVGpYEhGfgN7mM1JB%3Flabel%3Dtoorop)
 
 [1HgpsmxV52eAjDcoNpVGpYEhGfgN7mM1JB](http://tinyurl.com/mccsoez)
+
+**PrettyBoyHelios** REST API V3 Upgrade
+
+<a href="https://www.bitcoinqrcodemaker.com"><img src="https://www.bitcoinqrcodemaker.com/api/?style=bitcoin&amp;address=3HygqTcCGq7uT8FL5UguvFkeqV2CSto3eE" height="300" width="300" border="0" /></a>
+
+BTC: 3HygqTcCGq7uT8FL5UguvFkeqV2CSto3eE 

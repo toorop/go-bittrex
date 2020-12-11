@@ -1,6 +1,9 @@
 package bittrex
 
-import "github.com/shopspring/decimal"
+import (
+	"github.com/shopspring/decimal"
+	"time"
+)
 
 type MarketSummary struct {
 	MarketName     string          `json:"MarketName"`
@@ -15,4 +18,14 @@ type MarketSummary struct {
 	BaseVolume     decimal.Decimal `json:"BaseVolume"`
 	PrevDay        decimal.Decimal `json:"PrevDay"`
 	TimeStamp      string          `json:"TimeStamp"`
+}
+
+type MarketSummaryV3 struct {
+	Symbol        string `json:"symbol"`
+	High          decimal.Decimal `json:"high"`
+	Low           decimal.Decimal `json:"low"`
+	Volume        decimal.Decimal `json:"volume"`
+	QuoteVolume   decimal.Decimal `json:"quoteVolume"`
+	PercentChange decimal.Decimal `json:"percentChange"`
+	UpdatedAt     time.Time `json:"updatedAt"`
 }

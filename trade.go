@@ -1,6 +1,9 @@
 package bittrex
 
-import "github.com/shopspring/decimal"
+import (
+	"github.com/shopspring/decimal"
+	"time"
+)
 
 // Used in getmarkethistory
 type Trade struct {
@@ -11,4 +14,12 @@ type Trade struct {
 	Total     decimal.Decimal `json:"Total"`
 	FillType  string          `json:"FillType"`
 	OrderType string          `json:"OrderType"`
+}
+
+type TradeV3 struct {
+	ID         string `json:"id"`
+	ExecutedAt time.Time `json:"executedAt"`
+	Quantity   string `json:"quantity"`
+	Rate       string `json:"rate"`
+	TakerSide  string `json:"takerSide"`
 }

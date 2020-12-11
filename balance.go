@@ -1,6 +1,9 @@
 package bittrex
 
-import "github.com/shopspring/decimal"
+import (
+	"github.com/shopspring/decimal"
+	"time"
+)
 
 type Balance struct {
 	Currency      string          `json:"Currency"`
@@ -10,4 +13,11 @@ type Balance struct {
 	CryptoAddress string          `json:"CryptoAddress"`
 	Requested     bool            `json:"Requested"`
 	Uuid          string          `json:"Uuid"`
+}
+
+type BalanceV3 struct {
+	CurrencySymbol string `json:"currencySymbol"`
+	Total          decimal.Decimal `json:"total"`
+	Available      decimal.Decimal `json:"available"`
+	UpdatedAt      time.Time `json:"updatedAt"`
 }

@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -104,6 +105,7 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 	} else {
 		rawurl = fmt.Sprintf("%s%s/%s", API_BASE, API_VERSION, resource)
 	}
+	fmt.Println("url: ", rawurl)
 
 	req, err := http.NewRequest(method, rawurl, strings.NewReader(payload))
 	if err != nil {
@@ -120,15 +122,27 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 			err = errors.New("You need to set API Key and API Secret to call this method")
 			return
 		}
-		nonce := time.Now().UnixNano()
-		q := req.URL.Query()
-		q.Set("apikey", c.apiKey)
-		q.Set("nonce", fmt.Sprintf("%d", nonce))
-		req.URL.RawQuery = q.Encode()
+
+		// Payload SHA512 to hex encoding
+		payloadSum := sha512.Sum512([]byte(payload))
+		payloadHash := hex.EncodeToString(payloadSum[:])
+
+		// Unix timestamp in milliseconds
+		nonce := time.Now().Unix()*1000
+
+		// All of the signature elemnts must be parsed as strings in this array.
+		preSignatura := []string{strconv.Itoa(int(nonce)), req.URL.String(), method, payloadHash}
+		signaturePayload := strings.Join(preSignatura, "")
+
 		mac := hmac.New(sha512.New, []byte(c.apiSecret))
-		_, err = mac.Write([]byte(req.URL.String()))
+		_, err = mac.Write([]byte(signaturePayload))
 		sig := hex.EncodeToString(mac.Sum(nil))
-		req.Header.Add("apisign", sig)
+
+		// Add headers
+		req.Header.Add("Api-Key", c.apiKey)
+		req.Header.Add("Api-Timestamp", fmt.Sprintf("%d", nonce))
+		req.Header.Add("Api-Content-Hash", payloadHash)
+		req.Header.Add("Api-Signature", sig)
 	}
 
 	resp, err := c.doTimeoutRequest(connectTimer, req)
@@ -142,7 +156,7 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 	if err != nil {
 		return response, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != 200 && resp.StatusCode != 201{
 		err = errors.New(resp.Status)
 	}
 	return response, err
