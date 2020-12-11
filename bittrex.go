@@ -382,7 +382,7 @@ func (b *Bittrex) Withdraw(address, currency string, quantity decimal.Decimal, t
 		CurrencySymbol:   currency,
 		Quantity:         quantity.String(),
 		CryptoAddress:    address,
-		CryptoAddressTag: tag,
+		CryptoAddressTag: "",
 	}
 	payload, err := json.Marshal(params)
 	r, err := b.client.do("POST", "withdrawals", string(payload), true)

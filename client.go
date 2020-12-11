@@ -156,7 +156,7 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 	if err != nil {
 		return response, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != 200 && resp.StatusCode != 201{
 		err = errors.New(resp.Status)
 	}
 	return response, err

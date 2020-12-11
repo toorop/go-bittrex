@@ -122,3 +122,10 @@ func TestPublicAPI(t *testing.T)  {
 	assert.Nil(t, err)
 	fmt.Println(info)
 }*/
+
+/*func TestWithdraw(t *testing.T)  {
+	bittrex := New(os.Getenv("API_PUBLIC"), os.Getenv("API_SECRET"))
+	info, err := bittrex.Withdraw("CRWauZnzPf3oNDntLGhPZNbDRZWrPjJmrRS9", "CRW", decimal.NewFromFloat(5.0), "test")
+	assert.Nil(t, err)
+	fmt.Println(info)
+}*/
