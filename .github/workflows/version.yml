@@ -1,0 +1,20 @@
+name: Bump Version Tag
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Bump version
+      run: |
+        git config --global user.email "actions@gmail.com"
+        git config --global user.name "Actions"
+        git fetch --tags
+        wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
