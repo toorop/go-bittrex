@@ -90,7 +90,7 @@ func (b *Bittrex) GetCurrencies() (currencies []CurrencyV3, err error) {
 
 // GetCurrency is used to get information of a single currency at Bittrex along with other meta data.
 func (b *Bittrex) GetCurrency(symbol string) (currencies CurrencyV3, err error) {
-	r, err := b.client.do("GET", "currencies/" + symbol, "", false)
+	r, err := b.client.do("GET", "currencies/"+symbol, "", false)
 	if err != nil {
 		return
 	}
@@ -246,7 +246,7 @@ func (b *Bittrex) BuyLimit(market string, quantity, rate decimal.Decimal) (uuid 
 // CreateOrder is used to create any type of supported order.
 func (b *Bittrex) CreateOrder(params CreateOrderParams) (order OrderV3, err error) {
 	// TODO Preprocessor
-	if params.Type == "" || params.MarketSymbol == "" || params.Direction == "" || params.TimeInForce == ""{
+	if params.Type == "" || params.MarketSymbol == "" || params.Direction == "" || params.TimeInForce == "" {
 		// Check for missing parameters
 		return OrderV3{}, ERR_ORDER_MISSING_PARAMETERS
 	}
@@ -289,11 +289,30 @@ func (b *Bittrex) CreateOrder(params CreateOrderParams) (order OrderV3, err erro
 
 // CancelOrder is used to cancel a buy or sell order.
 func (b *Bittrex) CancelOrder(orderID string) (order OrderV3, err error) {
-	r, err := b.client.do("DELETE", "orders/" + orderID, "", true)
+	r, err := b.client.do("DELETE", "orders/"+orderID, "", true)
 	if err != nil {
 		return
 	}
 	err = json.Unmarshal(r, &order)
+	return
+}
+
+// GetClosedOrders returns orders that you currently have opened.
+// If market is set to "all", GetClosedOrders return all orders
+// If market is set to a specific order, GetClosedOrders return orders for this market
+func (b *Bittrex) GetClosedOrders(market string) (closedOrders []OrderV3, err error) {
+	resource := "orders/closed"
+	if market == "" {
+		market = "all"
+	}
+	if market != "all" {
+		resource += "?marketSymbol=" + strings.ToUpper(market)
+	}
+	r, err := b.client.do("GET", resource, "", true)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(r, &closedOrders)
 	return
 }
 
@@ -406,7 +425,7 @@ func (b *Bittrex) GetOpenWithdrawals(currency string, status WithdrawalStatus) (
 	if len(queryParams) != 0 {
 		resource += "?"
 	}
-	r, err := b.client.do("GET", resource + queryParams, "", true)
+	r, err := b.client.do("GET", resource+queryParams, "", true)
 	if err != nil {
 		return
 	}
@@ -428,7 +447,7 @@ func (b *Bittrex) GetClosedWithdrawals(currency string, status WithdrawalStatus)
 	if len(queryParams) != 0 {
 		resource += "?"
 	}
-	r, err := b.client.do("GET", resource + queryParams, "", true)
+	r, err := b.client.do("GET", resource+queryParams, "", true)
 	if err != nil {
 		return
 	}
