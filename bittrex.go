@@ -5,14 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/go-querystring/query"
-	"github.com/shopspring/decimal"
 	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/google/go-querystring/query"
+	"github.com/shopspring/decimal"
 )
 
 const (
@@ -245,23 +246,21 @@ func (b *Bittrex) BuyLimit(market string, quantity, rate decimal.Decimal) (uuid 
 
 // CreateOrder is used to create any type of supported order.
 func (b *Bittrex) CreateOrder(params CreateOrderParams) (order OrderV3, err error) {
+
 	// TODO Preprocessor
 	if params.Type == "" || params.MarketSymbol == "" || params.Direction == "" || params.TimeInForce == "" {
 		// Check for missing parameters
 		return OrderV3{}, ERR_ORDER_MISSING_PARAMETERS
 	}
-	var finalParams = CreateOrderParams{
-		MarketSymbol:  params.MarketSymbol,
-		Direction:     params.Direction,
-		Type:          params.Type,
-		Quantity:      decimal.Decimal{},
-		Ceiling:       decimal.Decimal{},
-		Limit:         decimal.Decimal{},
-		TimeInForce:   params.TimeInForce,
-		ClientOrderID: params.ClientOrderID,
-		UseAwards:     params.UseAwards,
-	}
 
+	// Mandatory fields
+	var finalParams CreateOrderParams
+	finalParams.Type = params.Type
+	finalParams.MarketSymbol = params.MarketSymbol
+	finalParams.Direction = params.Direction
+	finalParams.TimeInForce = params.TimeInForce
+
+	// Per-type fields
 	switch params.Type {
 	case MARKET:
 		finalParams.Quantity = params.Quantity
@@ -272,7 +271,6 @@ func (b *Bittrex) CreateOrder(params CreateOrderParams) (order OrderV3, err erro
 		finalParams.Ceiling = params.Ceiling
 	case CEILING_MARKET:
 		finalParams.Ceiling = params.Ceiling
-
 	}
 
 	payload, err := json.Marshal(finalParams)
@@ -280,9 +278,11 @@ func (b *Bittrex) CreateOrder(params CreateOrderParams) (order OrderV3, err erro
 		return
 	}
 	r, err := b.client.do("POST", fmt.Sprintf("orders"), string(payload), true)
+
 	if err != nil {
 		return
 	}
+
 	err = json.Unmarshal(r, &order)
 	return
 }
