@@ -105,7 +105,6 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 	} else {
 		rawurl = fmt.Sprintf("%s%s/%s", API_BASE, API_VERSION, resource)
 	}
-	fmt.Println("url: ", rawurl)
 
 	req, err := http.NewRequest(method, rawurl, strings.NewReader(payload))
 	if err != nil {
@@ -128,7 +127,7 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 		payloadHash := hex.EncodeToString(payloadSum[:])
 
 		// Unix timestamp in milliseconds
-		nonce := time.Now().Unix()*1000
+		nonce := time.Now().Unix() * 1000
 
 		// All of the signature elemnts must be parsed as strings in this array.
 		preSignatura := []string{strconv.Itoa(int(nonce)), req.URL.String(), method, payloadHash}
@@ -152,12 +151,12 @@ func (c *client) do(method string, resource string, payload string, authNeeded b
 
 	defer resp.Body.Close()
 	response, err = ioutil.ReadAll(resp.Body)
-	//fmt.Println(fmt.Sprintf("reponse %s", response), err)
+
 	if err != nil {
 		return response, err
 	}
-	if resp.StatusCode != 200 && resp.StatusCode != 201{
-		err = errors.New(resp.Status)
+	if resp.StatusCode != 200 && resp.StatusCode != 201 {
+		err = errors.New(fmt.Sprintf("status: %v message:%s", resp.Status, string(response)))
 	}
 	return response, err
 }
