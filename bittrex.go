@@ -437,9 +437,12 @@ func (b *Bittrex) GetOpenWithdrawals(currency string, status WithdrawalStatus) (
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
 // TODO Add more parameters according to https://bittrex.github.io/api/v3#operation--withdrawals-closed-get
 func (b *Bittrex) GetClosedWithdrawals(currency string, status WithdrawalStatus) (withdrawals []WithdrawalV3, err error) {
-	var params = WithdrawalHistoryParams{
-		Status:         string(status),
-		CurrencySymbol: strings.ToUpper(currency),
+	var params = WithdrawalHistoryParams{}
+	if currency != "all" {
+		params.CurrencySymbol = currency
+	}
+	if status != "" {
+		params.Status = string(status)
 	}
 	v, _ := query.Values(params)
 	queryParams := v.Encode()
@@ -473,11 +476,54 @@ func (b *Bittrex) GetWithdrawalByTxId(txid string) (withdrawal WithdrawalV3, err
 	return
 }
 
-// GetDepositHistory is used to retrieve your deposit history
+// GetOpenDepositHistory is used to retrieve your open deposit history
 // currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
-func (b *Bittrex) GetDepositHistory(txid string) (deposits []DepositV3, err error) {
-	resource := fmt.Sprintf("deposits/ByTxId/%s", txid)
-	r, err := b.client.do("GET", resource, "", true)
+func (b *Bittrex) GetOpenDepositHistory(currency string, status DepositStatus) (deposits []DepositV3, err error) {
+	var params = DepositHistoryParams{}
+	if currency != "all" {
+		params.CurrencySymbol = currency
+	}
+	if status != "" {
+		params.Status = string(status)
+	}
+	v, _ := query.Values(params)
+	queryParams := v.Encode()
+	resource := "deposits/open"
+	if len(queryParams) != 0 {
+		resource += "?"
+	}
+	r, err := b.client.do("GET", resource+queryParams, "", true)
+	if err != nil {
+		return
+	}
+	// var response json.RawMessage
+	if err = json.Unmarshal(r, &deposits); err != nil {
+		return
+	}
+	/*if err = handleErr(response); err != nil {
+		return
+	}*/
+	// err = json.Unmarshal(response, &deposits)
+	return
+}
+
+// GetClosedDepositHistory is used to retrieve your closed deposit history
+// currency string a string literal for the currency (ie. BTC). If set to "all", will return for all currencies
+func (b *Bittrex) GetClosedDepositHistory(currency string, status DepositStatus) (deposits []DepositV3, err error) {
+	var params = DepositHistoryParams{}
+	if currency != "all" {
+		params.CurrencySymbol = currency
+	}
+	if status != "" {
+		params.Status = string(status)
+	}
+	v, _ := query.Values(params)
+	queryParams := v.Encode()
+	resource := "deposits/closed"
+	if len(queryParams) != 0 {
+		resource += "?"
+	}
+	r, err := b.client.do("GET", resource+queryParams, "", true)
 	if err != nil {
 		return
 	}

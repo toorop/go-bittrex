@@ -26,12 +26,24 @@ const (
 	SELL OrderDirection = "SELL"
 )
 
+type DepositStatus string
+
+const (
+	DEPOSIT_PENDING DepositStatus = "PENDING"
+	DEPOSIT_COMPLETED DepositStatus = "COMPLETED"
+	DEPOSIT_ORPHANED DepositStatus = "ORPHANED"
+	DEPOSIT_INVALIDATED DepositStatus = "INVALIDATED"
+	DEPOSIT_ALL DepositStatus = ""
+)
+
 type WithdrawalStatus string
 
 const (
 	REQUESTED WithdrawalStatus = "REQUESTED"
 	AUTHORIZED WithdrawalStatus = "AUTHORIZED"
 	PENDING WithdrawalStatus = "PENDING"
+	COMPLETED WithdrawalStatus = "COMPLETED"
+	CANCELLED WithdrawalStatus = "CANCELLED"
 	ERROR_INVALID_ADDRESS WithdrawalStatus = "ERROR_INVALID_ADDRESS"
 	ALL WithdrawalStatus = ""
 )
