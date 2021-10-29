@@ -25,3 +25,8 @@ type DepositV3 struct {
 	Status           string          `json:"status"`
 	Source           string          `json:"source"`
 }
+
+type DepositHistoryParams struct {
+	Status         string `url:"status,omitempty"`
+	CurrencySymbol string `url:"currencySymbol,omitempty"`
+}
