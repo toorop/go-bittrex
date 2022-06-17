@@ -25,4 +25,5 @@ type CurrencyV3 struct {
 	ProhibitedIn             []interface{}   `json:"prohibitedIn"`
 	BaseAddress              string          `json:"baseAddress,omitempty"`
 	AssociatedTermsOfService []interface{}   `json:"associatedTermsOfService"`
+	Tags                     []string        `json:"tags"`
 }
